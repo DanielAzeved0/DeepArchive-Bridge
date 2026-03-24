@@ -1,0 +1,13 @@
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\DeepArchiveBridge.Core.csproj.AssemblyReference.cache
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\DeepArchiveBridge.Core.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\DeepArchiveBridge.Core.AssemblyInfoInputs.cache
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\DeepArchiveBridge.Core.AssemblyInfo.cs
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\DeepArchiveBridge.Core.csproj.CoreCompileInputs.cache
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\DeepArchiveBridge.Core.sourcelink.json
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\bin\Debug\net8.0\DeepArchiveBridge.Core.deps.json
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\bin\Debug\net8.0\DeepArchiveBridge.Core.dll
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\bin\Debug\net8.0\DeepArchiveBridge.Core.pdb
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\DeepArchiveBridge.Core.dll
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\refint\DeepArchiveBridge.Core.dll
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\DeepArchiveBridge.Core.pdb
+C:\Users\Famili Azevedo\source\repos\DeepArchive-Bridge\src\DeepArchiveBridge.Core\obj\Debug\net8.0\ref\DeepArchiveBridge.Core.dll

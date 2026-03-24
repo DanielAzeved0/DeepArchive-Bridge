@@ -1,0 +1,365 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\Controllers\\VendasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.API\\Controllers\\VendasController.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.API\\Program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.API\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\DeepArchiveBridge.sln||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:DeepArchiveBridge.sln||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\VendaItem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Core\\Models\\VendaItem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\Venda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Core\\Models\\Venda.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\Dtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Core\\Models\\Dtos.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Interfaces\\IVendaRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Core\\Interfaces\\IVendaRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Interfaces\\IStorageServices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Core\\Interfaces\\IStorageServices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Context\\VendaDbContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Data\\Context\\VendaDbContext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\DataResolver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Data\\Services\\DataResolver.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\HotStorageService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Data\\Services\\HotStorageService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\ColdStorageService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Data\\Services\\ColdStorageService.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Repositories\\VendaRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.Data\\Repositories\\VendaRepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj||{8B382828-6202-11D1-8870-0000F87579D2}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj||{8B382828-6202-11D1-8870-0000F87579D2}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\GlobalUsings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.API\\GlobalUsings.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\appsettings.Development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:src\\DeepArchiveBridge.API\\appsettings.Development.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 257,
+          "SelectedChildIndex": 7,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c64b9c2-e352-428e-a56d-0ace190b99a6}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:128:0:{116d2292-e37d-41cd-a077-ebacac4c8cc4}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:129:0:{75188d03-9892-4ae2-abf1-207126247ce5}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 18,
+              "Title": "appsettings.Development.json",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\appsettings.Development.json",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.API\\appsettings.Development.json",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\appsettings.Development.json",
+              "RelativeToolTip": "src\\DeepArchiveBridge.API\\appsettings.Development.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-24T00:00:50.135Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "GlobalUsings.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\GlobalUsings.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.API\\GlobalUsings.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\GlobalUsings.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.API\\GlobalUsings.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:47:54.38Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "DeepArchiveBridge.sln",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\DeepArchiveBridge.sln",
+              "RelativeDocumentMoniker": "DeepArchiveBridge.sln",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\DeepArchiveBridge.sln",
+              "RelativeToolTip": "DeepArchiveBridge.sln",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.002855|",
+              "WhenOpened": "2026-03-23T23:45:27.132Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\appsettings.json",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.API\\appsettings.json",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\appsettings.json",
+              "RelativeToolTip": "src\\DeepArchiveBridge.API\\appsettings.json",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-23T23:46:27.647Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "VendasController.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\Controllers\\VendasController.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.API\\Controllers\\VendasController.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\Controllers\\VendasController.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.API\\Controllers\\VendasController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAZAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:46:39.205Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "DataResolver.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\DataResolver.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Data\\Services\\DataResolver.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\DataResolver.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Data\\Services\\DataResolver.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:46:01.455Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "Program.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\Program.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.API\\Program.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\Program.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.API\\Program.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:46:25.047Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "HotStorageService.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\HotStorageService.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Data\\Services\\HotStorageService.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\HotStorageService.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Data\\Services\\HotStorageService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEsAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:46:06.732Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ColdStorageService.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\ColdStorageService.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Data\\Services\\ColdStorageService.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Services\\ColdStorageService.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Data\\Services\\ColdStorageService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:46:11.214Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "VendaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Repositories\\VendaRepository.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Data\\Repositories\\VendaRepository.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Repositories\\VendaRepository.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Data\\Repositories\\VendaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAE4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:46:16.749Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "DeepArchiveBridge.API.csproj",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+              "RelativeToolTip": "src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-03-23T23:46:20.273Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "VendaDbContext.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Context\\VendaDbContext.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Data\\Context\\VendaDbContext.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\Context\\VendaDbContext.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Data\\Context\\VendaDbContext.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEYAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:45:57.29Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 8,
+              "Title": "IVendaRepository.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Interfaces\\IVendaRepository.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Core\\Interfaces\\IVendaRepository.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Interfaces\\IVendaRepository.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Core\\Interfaces\\IVendaRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAIBJwBkAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:45:44.113Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 9,
+              "Title": "IStorageServices.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Interfaces\\IStorageServices.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Core\\Interfaces\\IStorageServices.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Interfaces\\IStorageServices.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Core\\Interfaces\\IStorageServices.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACgAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:45:48.475Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 7,
+              "Title": "Dtos.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\Dtos.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Core\\Models\\Dtos.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\Dtos.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Core\\Models\\Dtos.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:45:41.037Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "Venda.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\Venda.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Core\\Models\\Venda.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\Venda.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Core\\Models\\Venda.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:45:38.336Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "VendaItem.cs",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\VendaItem.cs",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Core\\Models\\VendaItem.cs",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\Models\\VendaItem.cs",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Core\\Models\\VendaItem.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-23T23:45:32.911Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "DeepArchiveBridge.Core.csproj",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+              "ViewState": "AgIAAAUAAAAAAAAAAABBwA0AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-03-23T23:45:30.205Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "DeepArchiveBridge.Data.csproj",
+              "DocumentMoniker": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+              "RelativeDocumentMoniker": "src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+              "ToolTip": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+              "RelativeToolTip": "src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+              "ViewState": "AgIAAAUAAAAAAAAAAABBwBUAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
+              "WhenOpened": "2026-03-23T23:45:52.248Z",
+              "EditorCaption": ""
+            }
+          ]
+        },
+        {
+          "DockedWidth": 141,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

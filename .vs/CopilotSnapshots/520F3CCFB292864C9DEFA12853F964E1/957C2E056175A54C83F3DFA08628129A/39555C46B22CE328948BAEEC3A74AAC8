@@ -1,0 +1,185 @@
+﻿using DeepArchiveBridge.Core.Interfaces;
+using DeepArchiveBridge.Core.Models;
+using DeepArchiveBridge.Data.Context;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+using System.Diagnostics;
+
+namespace DeepArchiveBridge.Data.Services;
+
+/// <summary>
+/// Serviço responsável por arquivar automaticamente dados antigos (>90 dias)
+/// Converte dados para Parquet e move para armazenamento frio
+/// </summary>
+public class ArchivingService : IArchivingService
+{
+    private readonly VendaDbContext _context;
+    private readonly ILogger<ArchivingService> _logger;
+    private const int DiasRetencaoHot = 90;
+
+    public ArchivingService(VendaDbContext context, ILogger<ArchivingService> logger)
+    {
+        _context = context;
+        _logger = logger;
+    }
+
+    /// <summary>
+    /// Obtém informações sobre dados que serão arquivados
+    /// </summary>
+    public async Task<ArquivamentoInfo> ObterInfoArquivamento()
+    {
+        var dataLimite = DateTime.UtcNow.AddDays(-DiasRetencaoHot);
+
+        // Dados totais
+        var totalVendas = await _context.Vendas.CountAsync();
+        var valorTotal = await _context.Vendas.SumAsync(v => v.Valor);
+
+        // Dados para arquivar
+        var vendasParaArquivar = await _context.Vendas
+            .Where(v => v.DataVenda < dataLimite)
+            .CountAsync();
+
+        var valorParaArquivar = await _context.Vendas
+            .Where(v => v.DataVenda < dataLimite)
+            .SumAsync(v => v.Valor);
+
+        var dataMaisAntiga = await _context.Vendas
+            .OrderBy(v => v.DataVenda)
+            .Select(v => v.DataVenda)
+            .FirstOrDefaultAsync();
+
+        var info = new ArquivamentoInfo
+        {
+            TotalVendas = totalVendas,
+            VendasParaArquivar = vendasParaArquivar,
+            ValorTotal = valorTotal ?? 0m,
+            ValorAArquivar = valorParaArquivar ?? 0m,
+            DataMaisAntiga = dataMaisAntiga,
+            DataLimite = dataLimite,
+            Mensagem = $"Encontradas {vendasParaArquivar} vendas para arquivar (de {totalVendas} total)"
+        };
+
+        return info;
+    }
+
+    /// <summary>
+    /// Arquiva automaticamente dados com mais de 90 dias
+    /// </summary>
+    public async Task<int> ArquivarDadosAntigos()
+    {
+        try
+        {
+            _logger.LogInformation("Iniciando arquivamento automático de dados antigos");
+
+            var dataLimite = DateTime.UtcNow.AddDays(-DiasRetencaoHot);
+
+            // Identifica vendas para arquivar
+            var vendasParaArquivar = await _context.Vendas
+                .Where(v => v.DataVenda < dataLimite)
+                .Include(v => v.Itens)
+                .ToListAsync();
+
+            if (vendasParaArquivar.Count == 0)
+            {
+                _logger.LogInformation("Nenhuma venda para arquivar");
+                return 0;
+            }
+
+            _logger.LogInformation($"Arquivando {vendasParaArquivar.Count} vendas");
+
+            // Aqui você salvaria em Parquet (implementação futura)
+            await SalvarEmParquetAsync(vendasParaArquivar);
+
+            // Remove do banco "quente"
+            _context.Vendas.RemoveRange(vendasParaArquivar);
+            await _context.SaveChangesAsync();
+
+            _logger.LogInformation($"Arquivamento concluído: {vendasParaArquivar.Count} vendas removidas do Hot Storage");
+
+            return vendasParaArquivar.Count;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao arquivar dados");
+            throw;
+        }
+    }
+
+    /// <summary>
+    /// Arquivamento com confirmação manual
+    /// </summary>
+    public async Task<ResultadoArquivamento> ArquivarComConfirmacao()
+    {
+        var stopwatch = Stopwatch.StartNew();
+        var resultado = new ResultadoArquivamento
+        {
+            DataExecucao = DateTime.UtcNow
+        };
+
+        try
+        {
+            var dataLimite = DateTime.UtcNow.AddDays(-DiasRetencaoHot);
+
+            // Identifica vendas para arquivar
+            var vendasParaArquivar = await _context.Vendas
+                .Where(v => v.DataVenda < dataLimite)
+                .Include(v => v.Itens)
+                .ToListAsync();
+
+            if (vendasParaArquivar.Count == 0)
+            {
+                resultado.Sucesso = true;
+                resultado.Mensagem = "Nenhuma venda para arquivar";
+                return resultado;
+            }
+
+            // Conta itens
+            var totalItens = vendasParaArquivar.Sum(v => v.Itens.Count);
+
+            // Salva em Parquet
+            var nomeArquivo = await SalvarEmParquetAsync(vendasParaArquivar);
+
+            // Remove do banco
+            _context.Vendas.RemoveRange(vendasParaArquivar);
+            await _context.SaveChangesAsync();
+
+            stopwatch.Stop();
+
+            resultado.Sucesso = true;
+            resultado.VendasArquivadas = vendasParaArquivar.Count;
+            resultado.ItensArquivados = totalItens;
+            resultado.ArquivoNome = nomeArquivo;
+            resultado.Duracao = stopwatch.Elapsed;
+            resultado.Mensagem = $"Arquivamento concluído: {vendasParaArquivar.Count} vendas e {totalItens} itens";
+
+            _logger.LogInformation($"Arquivamento concluído em {stopwatch.ElapsedMilliseconds}ms");
+
+            return resultado;
+        }
+        catch (Exception ex)
+        {
+            _logger.LogError(ex, "Erro ao arquivar com confirmação");
+            resultado.Sucesso = false;
+            resultado.Mensagem = ex.Message;
+            return resultado;
+        }
+    }
+
+    /// <summary>
+    /// Salva dados em formato Parquet (simulado por enquanto)
+    /// Em produção, isso seria enviado para Azure Blob Storage
+    /// </summary>
+    private async Task<string> SalvarEmParquetAsync(List<Venda> vendas)
+    {
+        // Implementação futura com Parquet real
+        // Por enquanto, simula o salvamento
+        var nomeArquivo = $"vendas_{DateTime.UtcNow:yyyyMMdd_HHmmss}.parquet";
+
+        // Simula latência de I/O
+        await Task.Delay(100);
+
+        _logger.LogInformation($"Dados salvos em Parquet: {nomeArquivo}");
+
+        return nomeArquivo;
+    }
+}

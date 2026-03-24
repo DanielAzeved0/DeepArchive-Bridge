@@ -1,0 +1,12 @@
+﻿{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information",
+      "Microsoft.EntityFrameworkCore": "Debug"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "PostgreSQL": "Host=localhost;Database=deeparchive_db;Username=deeparchive_user;Password=secure_password_123"
+  }
+}
