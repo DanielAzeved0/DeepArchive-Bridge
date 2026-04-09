@@ -4,8 +4,8 @@ using DeepArchiveBridge.Core.Models;
 namespace DeepArchiveBridge.Data.Context;
 
 /// <summary>
-/// DbContext para armazenamento "Hot" em PostgreSQL
-/// Armazena dados de 0 a 90 dias
+/// DbContext unificado para SQLite (Cold/Archive Storage)
+/// Armazena todos os dados de vendas em armazenamento frio
 /// </summary>
 public class VendaDbContext : DbContext
 {

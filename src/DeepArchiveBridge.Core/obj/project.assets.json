@@ -479,11 +479,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+      "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
       "projectName": "DeepArchiveBridge.Core",
-      "projectPath": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+      "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
       "packagesPath": "C:\\Users\\Famili Azevedo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\obj\\",
+      "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Famili Azevedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -539,7 +539,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
       }
     }
   }

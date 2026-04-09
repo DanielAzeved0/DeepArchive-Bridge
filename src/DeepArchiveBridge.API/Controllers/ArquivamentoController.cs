@@ -11,7 +11,9 @@ public class ArquivamentoController : ControllerBase
     private readonly IArchivingService _archivingService;
     private readonly ILogger<ArquivamentoController> _logger;
 
-    public ArquivamentoController(IArchivingService archivingService, ILogger<ArquivamentoController> logger)
+    public ArquivamentoController(
+        IArchivingService archivingService, 
+        ILogger<ArquivamentoController> logger)
     {
         _archivingService = archivingService;
         _logger = logger;
@@ -21,87 +23,62 @@ public class ArquivamentoController : ControllerBase
     /// Obtém informações sobre dados que serão arquivados
     /// </summary>
     [HttpGet("info")]
-    public async Task<ActionResult<ApiResponse<ArquivamentoInfo>>> ObterInfo()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ApiResponse<ArquivamentoInfo>>> ObterInfo(
+        CancellationToken cancellationToken = default)
     {
-        try
-        {
-            var info = await _archivingService.ObterInfoArquivamento();
+        _logger.LogInformation("Obtendo informações de arquivamento");
 
-            return Ok(new ApiResponse<ArquivamentoInfo>
-            {
-                Sucesso = true,
-                Dados = info,
-                Mensagem = info.Mensagem
-            });
-        }
-        catch (Exception ex)
+        var info = await _archivingService.ObterInfoArquivamento();
+
+        return Ok(new ApiResponse<ArquivamentoInfo>
         {
-            _logger.LogError(ex, "Erro ao obter informações de arquivamento");
-            return BadRequest(new ApiResponse<ArquivamentoInfo>
-            {
-                Sucesso = false,
-                Mensagem = ex.Message
-            });
-        }
+            Sucesso = true,
+            Dados = info,
+            Mensagem = info.Mensagem
+        });
     }
 
     /// <summary>
-    /// Executa o arquivamento automático de dados com mais de 90 dias
+    /// Executa o arquivamento com confirmação prévia
     /// </summary>
     [HttpPost("executar")]
-    public async Task<ActionResult<ApiResponse<ResultadoArquivamento>>> Executar()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ApiResponse<ResultadoArquivamento>>> Executar(
+        CancellationToken cancellationToken = default)
     {
-        try
-        {
-            _logger.LogInformation("Iniciando arquivamento de dados");
+        _logger.LogInformation("Iniciando arquivamento de dados com confirmação");
 
-            var resultado = await _archivingService.ArquivarComConfirmacao();
+        var resultado = await _archivingService.ArquivarComConfirmacao();
 
-            return Ok(new ApiResponse<ResultadoArquivamento>
-            {
-                Sucesso = resultado.Sucesso,
-                Dados = resultado,
-                Mensagem = resultado.Mensagem
-            });
-        }
-        catch (Exception ex)
+        return Ok(new ApiResponse<ResultadoArquivamento>
         {
-            _logger.LogError(ex, "Erro ao executar arquivamento");
-            return BadRequest(new ApiResponse<ResultadoArquivamento>
-            {
-                Sucesso = false,
-                Mensagem = ex.Message
-            });
-        }
+            Sucesso = resultado.Sucesso,
+            Dados = resultado,
+            Mensagem = resultado.Mensagem
+        });
     }
 
     /// <summary>
     /// Executa o arquivamento automático sem confirmação (para agendamento)
     /// </summary>
     [HttpPost("executar-automatico")]
-    public async Task<ActionResult<ApiResponse<int>>> ExecutarAutomatico()
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    public async Task<ActionResult<ApiResponse<int>>> ExecutarAutomatico(
+        CancellationToken cancellationToken = default)
     {
-        try
-        {
-            _logger.LogInformation("Iniciando arquivamento automático");
+        _logger.LogInformation("Iniciando arquivamento automático (sem confirmação)");
 
-            var quantidadeArquivada = await _archivingService.ArquivarDadosAntigos();
+        var quantidadeArquivada = await _archivingService.ArquivarDadosAntigos();
 
-            return Ok(new ApiResponse<int>
-            {
-                Sucesso = true,
-                Dados = quantidadeArquivada,
-                Mensagem = $"Arquivamento concluído: {quantidadeArquivada} vendas movidas para Cold Storage"
-            });
-        }
-        catch (Exception ex)
+        return Ok(new ApiResponse<int>
         {
-            _logger.LogError(ex, "Erro ao executar arquivamento automático");
-            return BadRequest(new ApiResponse<int>
-            {
-                Sucesso = false,
-                Mensagem = ex.Message
-            });
-        }
+            Sucesso = true,
+            Dados = quantidadeArquivada,
+            Mensagem = $"Arquivamento concluído: {quantidadeArquivada} vendas movidas para Cold Storage"
+        });
     }
 }

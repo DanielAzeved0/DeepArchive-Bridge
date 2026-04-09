@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {}
+    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
+    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
         "projectName": "DeepArchiveBridge.Core",
-        "projectPath": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+        "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
         "packagesPath": "C:\\Users\\Famili Azevedo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\obj\\",
+        "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Famili Azevedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -26,7 +26,6 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {}
           }
@@ -45,7 +44,6 @@
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
             "Parquet.Net": {
@@ -69,18 +67,18 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     },
-    "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {
+    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+        "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
         "projectName": "DeepArchiveBridge.Data",
-        "projectPath": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+        "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
         "packagesPath": "C:\\Users\\Famili Azevedo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\obj\\",
+        "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Famili Azevedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -95,11 +93,10 @@
         },
         "frameworks": {
           "net8.0": {
-            "framework": "net8.0",
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
-                "projectPath": "C:\\Users\\Famili Azevedo\\source\\repos\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj"
+              "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
+                "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj"
               }
             }
           }
@@ -118,28 +115,19 @@
       },
       "frameworks": {
         "net8.0": {
-          "framework": "net8.0",
           "targetAlias": "net8.0",
           "dependencies": {
-            "Azure.Storage.Blobs": {
-              "target": "Package",
-              "version": "[12.21.0, )"
-            },
             "Microsoft.EntityFrameworkCore": {
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[8.0.5, )"
             },
             "Microsoft.EntityFrameworkCore.Design": {
               "target": "Package",
-              "version": "[8.0.0, )"
+              "version": "[8.0.5, )"
             },
-            "Npgsql.EntityFrameworkCore.PostgreSQL": {
+            "Microsoft.EntityFrameworkCore.Sqlite": {
               "target": "Package",
-              "version": "[8.0.0, )"
-            },
-            "Parquet.Net": {
-              "target": "Package",
-              "version": "[4.11.0, )"
+              "version": "[8.0.5, )"
             }
           },
           "imports": [
@@ -158,7 +146,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.200/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\10.0.201/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

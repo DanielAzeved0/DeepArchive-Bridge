@@ -7,8 +7,8 @@ namespace DeepArchiveBridge.Core.Interfaces;
 /// </summary>
 public enum EstrategiaArmazenamento
 {
-    Hot,      // Banco de dados PostgreSQL
-    Cold,     // Arquivos Parquet na nuvem
+    Hot,      // Banco de dados SQLite
+    Cold,     // Arquivos em Cold Storage
     Auto      // Sistema decide automaticamente
 }
 
@@ -17,9 +17,19 @@ public enum EstrategiaArmazenamento
 /// </summary>
 public interface IVendaRepository
 {
-    Task<List<Venda>> BuscarAsync(BuscaVendaRequest request, EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto);
-    Task<Venda?> BuscarPorIdAsync(int id, EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto);
-    Task<int> CriarAsync(Venda venda);
-    Task AtualizarAsync(Venda venda);
-    Task DeletarAsync(int id);
+    Task<List<Venda>> BuscarAsync(
+        BuscaVendaRequest request, 
+        EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto,
+        CancellationToken cancellationToken = default);
+
+    Task<Venda?> BuscarPorIdAsync(
+        int id, 
+        EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto,
+        CancellationToken cancellationToken = default);
+
+    Task<int> CriarAsync(Venda venda, CancellationToken cancellationToken = default);
+    
+    Task AtualizarAsync(Venda venda, CancellationToken cancellationToken = default);
+    
+    Task DeletarAsync(int id, CancellationToken cancellationToken = default);
 }

@@ -1,1 +1,0 @@
-INSERT INTO "VendaItems" ("Produto", "Quantidade", "PrecoUnitario", "VendaId") VALUES ('Notebook', 1, 3000.00, 3); INSERT INTO "VendaItems" ("Produto", "Quantidade", "PrecoUnitario", "VendaId") VALUES ('Mouse', 2, 50.00, 3);

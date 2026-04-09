@@ -1,78 +1,92 @@
 using DeepArchiveBridge.Core.Interfaces;
 using DeepArchiveBridge.Core.Models;
+using DeepArchiveBridge.Data.Context;
+using Microsoft.EntityFrameworkCore;
 
 namespace DeepArchiveBridge.Data.Repositories;
 
 /// <summary>
-/// Repository unificado que arbitra entre Hot e Cold
-/// Esse é o componente-chave do DeepArchive Bridge
+/// Repository unificado para SQLite (Cold Storage)
+/// Gerencia todas as vendas arquivadas
 /// </summary>
 public class VendaRepository : IVendaRepository
 {
-    private readonly IHotStorageService _hotStorage;
-    private readonly IColdStorageService _coldStorage;
-    private readonly IDataResolver _resolver;
+    private readonly VendaDbContext _context;
 
-    public VendaRepository(
-        IHotStorageService hotStorage,
-        IColdStorageService coldStorage,
-        IDataResolver resolver)
+    public VendaRepository(VendaDbContext context)
     {
-        _hotStorage = hotStorage;
-        _coldStorage = coldStorage;
-        _resolver = resolver;
+        _context = context;
     }
 
-    public async Task<List<Venda>> BuscarAsync(BuscaVendaRequest request, EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto)
+    public async Task<List<Venda>> BuscarAsync(
+        BuscaVendaRequest request, 
+        EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto,
+        CancellationToken cancellationToken = default)
     {
-        // Se Auto, deixa o resolver decidir
-        if (estrategia == EstrategiaArmazenamento.Auto)
+        var query = _context.Vendas.AsNoTracking();
+
+        // Filtro por data
+        query = query.Where(v => v.DataVenda >= request.DataInicio && v.DataVenda <= request.DataFim);
+
+        // Filtro por cliente (opcional)
+        if (!string.IsNullOrEmpty(request.ClienteId))
         {
-            estrategia = _resolver.ResolverEstrategiaRange(request.DataInicio, request.DataFim);
+            query = query.Where(v => v.ClienteId == request.ClienteId);
         }
 
-        // Se os dados solicitados abrangem Hot e Cold, busca de ambos
-        var diasInicio = (DateTime.UtcNow - request.DataInicio).Days;
-        var diasFim = (DateTime.UtcNow - request.DataFim).Days;
-
-        var vendas = new List<Venda>();
-
-        // Dados recentes (Hot)
-        if (diasFim <= 90)
+        // Filtro por status (opcional)
+        if (request.Status.HasValue)
         {
-            var vendasHot = await _hotStorage.BuscarVendasAsync(request);
-            vendas.AddRange(vendasHot);
+            query = query.Where(v => v.Status == request.Status);
         }
 
-        // Dados antigos (Cold) - se aplicável
-        if (diasInicio > 90)
+        // Ordenação e paginação
+        var vendas = await query
+            .Include(v => v.Itens)
+            .OrderByDescending(v => v.DataVenda)
+            .Skip(request.Skip)
+            .Take(request.Take)
+            .ToListAsync(cancellationToken);
+
+        return vendas;
+    }
+
+    public async Task<Venda?> BuscarPorIdAsync(
+        int id, 
+        EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto,
+        CancellationToken cancellationToken = default)
+    {
+        return await _context.Vendas
+            .AsNoTracking()
+            .Include(v => v.Itens)
+            .FirstOrDefaultAsync(v => v.Id == id, cancellationToken);
+    }
+
+    public async Task<int> CriarAsync(Venda venda, CancellationToken cancellationToken = default)
+    {
+        venda.DataCriacao = DateTime.UtcNow;
+        _context.Vendas.Add(venda);
+        await _context.SaveChangesAsync(cancellationToken);
+        return venda.Id;
+    }
+
+    public async Task AtualizarAsync(Venda venda, CancellationToken cancellationToken = default)
+    {
+        venda.DataAtualizacao = DateTime.UtcNow;
+        _context.Vendas.Update(venda);
+        await _context.SaveChangesAsync(cancellationToken);
+    }
+
+    public async Task DeletarAsync(int id, CancellationToken cancellationToken = default)
+    {
+        var venda = await _context.Vendas.FindAsync(
+            new object[] { id }, 
+            cancellationToken: cancellationToken);
+        
+        if (venda != null)
         {
-            var vendasCold = await _coldStorage.BuscarVendasAsync(request.DataInicio, request.DataFim, request.ClienteId);
-            vendas.AddRange(vendasCold);
+            _context.Vendas.Remove(venda);
+            await _context.SaveChangesAsync(cancellationToken);
         }
-
-        return vendas.OrderByDescending(v => v.DataVenda).ToList();
-    }
-
-    public async Task<Venda?> BuscarPorIdAsync(int id, EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto)
-    {
-        // Sempre tenta Hot primeiro (dados são duplicados)
-        var venda = await _hotStorage.BuscarVendaPorIdAsync(id);
-        return venda;
-    }
-
-    public async Task<int> CriarAsync(Venda venda)
-    {
-        return await _hotStorage.CriarVendaAsync(venda);
-    }
-
-    public async Task AtualizarAsync(Venda venda)
-    {
-        await _hotStorage.AtualizarVendaAsync(venda);
-    }
-
-    public async Task DeletarAsync(int id)
-    {
-        await _hotStorage.DeletarVendaAsync(id);
     }
 }
