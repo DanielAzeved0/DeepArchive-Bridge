@@ -1,25 +1,29 @@
 # 📦 DeepArchive-Bridge
 
-**DeepArchive-Bridge** é uma API robusta desenvolvida em **.NET 8** que implementa um sistema inteligente de **armazenamento em camadas (Hot/Cold Storage)** para otimizar o gerenciamento de dados de vendas. O sistema automatiza o arquivamento de dados antigos para armazenamento em frio, mantendo dados recentes em acesso rápido no banco de dados quente.
+**DeepArchive-Bridge** é uma API robusta e moderna desenvolvida em **.NET 8** que implementa um sistema inteligente de **armazenamento em camadas (Hot/Cold Storage)** com **boas práticas de backend** de nível empresarial. O sistema automatiza o arquivamento de dados antigos, mantendo dados recentes em acesso otimizado através de **SQLite consolidado**.
 
 A solução é ideal para empresas que precisam:
 - 🔥 Manter dados recentes rápidos e acessíveis
 - ❄️ Arquivar dados históricos com segurança
 - 📊 Reduzir custos operacionais de banco de dados
+- 🏗️ Implementar padrões profissionais de backend
 - 🔄 Automatizar o processo de arquivamento
 
 ---
 
-## 🚀 Funcionalidades
+## ✨ Funcionalidades Principais
 
-- ✅ **Gerenciamento automático de vendas** - CRUD completo de transações
+- ✅ **Gerenciamento automático de vendas** - CRUD completo com validação rigorosa
 - ✅ **Arquivamento inteligente** - Movimentação automática de dados com mais de 90 dias
-- ✅ **Duas camadas de armazenamento**:
-  - 🔥 **Hot Storage**: PostgreSQL com acesso rápido para dados recentes
-  - ❄️ **Cold Storage**: Armazenamento de arquivo para dados históricos
-- ✅ **API RESTful** - Endpoints bem documentados com Swagger
+- ✅ **Armazenamento consolidado em SQLite** - Única fonte de verdade, performance otimizada
+- ✅ **API RESTful** - Endpoints bem documentados com Swagger/OpenAPI
+- ✅ **Validação robusta** - FluentValidation para todas as requisições
+- ✅ **Tratamento global de exceções** - Middleware centralizado com HTTP status corretos
+- ✅ **Health Check endpoint** - Monitoramento de saúde da API
+- ✅ **Configuration Pattern** - Gerenciamento profissional de settings
+- ✅ **CancellationToken support** - Operações async seguras e cancellables
 - ✅ **Injeção de Dependências** - Arquitetura desacoplada e testável
-- ✅ **Docker Compose** - Ambiente pronto para desenvolvimento
+- ✅ **Clean Architecture** - Separação clara de responsabilidades
 
 ---
 
@@ -28,54 +32,66 @@ A solução é ideal para empresas que precisam:
 | Camada | Tecnologia | Versão |
 |--------|-----------|--------|
 | **API & Backend** | .NET | 8.0 |
-| **Linguagem** | C# | - |
-| **Banco de Dados** | PostgreSQL | 16 |
-| **ORM** | Entity Framework Core | Latest |
-| **Containerização** | Docker & Docker Compose | - |
+| **Linguagem** | C# | Latest |
+| **Banco de Dados** | SQLite | 3.x |
+| **ORM** | Entity Framework Core | 8.0.5 |
+| **Validação** | FluentValidation | 11.11.0 |
+| **Health Checks** | Microsoft.Extensions.Diagnostics.HealthChecks | 8.0.0 |
 | **Documentação** | Swagger UI | Built-in |
+| **Logging** | Serilog Ready | Structured Logging |
 
 ---
 
-## 📦 Arquitetura
+## 📦 Arquitetura - Clean Architecture
 
 O projeto segue o padrão **Clean Architecture** com separação clara de responsabilidades:
 
 ```
 src/
-├── DeepArchiveBridge.Core/          # Núcleo da aplicação
-│   ├── Interfaces/                  # Contratos de serviços
-│   │   ├── IArchivingService.cs    # Interface de arquivamento
-│   │   ├── IStorageServices.cs     # Interfaces de armazenamento
-│   │   └── IVendaRepository.cs     # Interface de repositório
-│   └── Models/                      # Entidades de domínio
-│       ├── Venda.cs                # Modelo de venda
-│       ├── VendaItem.cs            # Itens da venda
-│       └── Dtos.cs                 # DTOs de transferência
+├── DeepArchiveBridge.Core/                    # Núcleo da aplicação
+│   ├── Exceptions/
+│   │   └── DomainExceptions.cs               # Custom exceptions (NotFoundException, ValidationException, etc)
+│   ├── Interfaces/                            # Contratos de serviços
+│   │   ├── IArchivingService.cs              # Interface de arquivamento
+│   │   ├── IColdStorageService.cs            # Interface de Cold Storage
+│   │   └── IVendaRepository.cs               # Interface de repositório (com CancellationToken)
+│   └── Models/                                # Entidades de domínio
+│       ├── Venda.cs                          # Modelo de venda
+│       ├── VendaItem.cs                      # Itens da venda
+│       ├── Dtos.cs                           # DTOs de transferência
+│       └── ApplicationOptions.cs             # Settings (ArchivingOptions, LoggingOptions, ApiOptions)
 │
-├── DeepArchiveBridge.Data/          # Camada de dados
-│   ├── Context/                     # Contexto do EF Core
-│   ├── Repositories/                # Padrão repositório
-│   └── Services/                    # Serviços de dados
+├── DeepArchiveBridge.Data/                    # Camada de dados
+│   ├── Context/
+│   │   └── VendaDbContext.cs                 # DbContext SQLite único
+│   ├── Repositories/
+│   │   └── VendaRepository.cs                # Implementação com async/await e CancellationToken
+│   └── Services/
+│       ├── ColdStorageService.cs             # Serviço de Cold Storage
+│       └── ArchivingService.cs               # Lógica de arquivamento automático
 │
-└── DeepArchiveBridge.API/           # API RESTful
-    ├── Controllers/                 # Controladores
-    │   ├── ArquivamentoController.cs # Endpoints de arquivamento
-    │   └── VendasController.cs       # Endpoints de vendas
-    ├── Program.cs                   # Configuração da aplicação
-    └── appsettings.json             # Configurações
+└── DeepArchiveBridge.API/                     # API RESTful
+    ├── Controllers/                           # Controladores com validação integrada
+    │   ├── VendasController.cs                # Endpoints de vendas (CRUD)
+    │   ├── ArquivamentoController.cs          # Endpoints de arquivamento
+    │   └── HealthController.cs                # Health check endpoints
+    ├── Middleware/
+    │   └── GlobalExceptionHandlerMiddleware.cs # Tratamento centralizado de exceções
+    ├── Validators/
+    │   └── RequestValidators.cs               # FluentValidation rules
+    ├── Program.cs                             # Configuração DI e middleware
+    └── appsettings*.json                      # Configurações (produção e desenvolvimento)
 ```
 
 ---
 
-## 🛠️ Como Rodar o Projeto (Desenvolvedor)
+## 🛠️ Como Rodar o Projeto
 
 ### 1. Pré-requisitos
 
 Certifique-se de ter instalado:
 
 - ✅ **.NET 8 SDK** → [Download](https://dotnet.microsoft.com/download/dotnet/8.0)
-- ✅ **PostgreSQL 16** → [Download](https://www.postgresql.org/download/)
-- ✅ **Docker & Docker Compose** *(opcional, mas recomendado)* → [Download](https://www.docker.com/)
 - ✅ **Git** → [Download](https://git-scm.com/)
 
 ### 2. Clone o Repositório
@@ -91,63 +107,297 @@ cd DeepArchive-Bridge
 dotnet restore
 ```
 
-### 4. Configure o Banco de Dados
-
-#### Opção A: Com Docker Compose (Recomendado)
-
-Execute o PostgreSQL em um container:
+### 4. Executar a API
 
 ```bash
-docker-compose up -d
+cd src/DeepArchiveBridge.API
+dotnet run
 ```
 
-#### Opção B: PostgreSQL Local
+A API estará disponível em: **http://localhost:5000**  
+Swagger UI disponível em: **http://localhost:5000/swagger**
 
-Crie um banco de dados manualmente:
+---
 
-```sql
-CREATE DATABASE deeparchive_db;
-CREATE USER deeparchive_user WITH PASSWORD 'secure_password_123';
-ALTER ROLE deeparchive_user SET client_encoding TO 'utf8';
-GRANT ALL PRIVILEGES ON DATABASE deeparchive_db TO deeparchive_user;
-```
+## 🚀 Estrutura de Configuração
 
-### 5. Configure a Connection String
-
-Edite `appsettings.json`:
+### appsettings.json (Produção)
 
 ```json
 {
+  "Logging": {
+    "LogLevel": {
+      "Default": "Information"
+    }
+  },
+  "AllowedHosts": "*",
   "ConnectionStrings": {
-    "PostgreSQL": "Host=localhost;Database=deeparchive_db;Username=deeparchive_user;Password=secure_password_123"
+    "DefaultConnection": "Data Source=archive.db;Cache=Shared"
+  },
+  "ArchivingSettings": {
+    "RetentionDaysHot": 90,
+    "DefaultPageSize": 100,
+    "MaxPageSize": 500,
+    "CommandTimeout": 30
+  },
+  "LoggingSettings": {
+    "UseStructuredLogging": true,
+    "LogHttpRequests": true,
+    "MinimumLogLevel": "Information"
+  },
+  "ApiSettings": {
+    "EnableCors": false,
+    "AllowedOrigins": [],
+    "EnableHealthCheck": true,
+    "ApiVersion": "1.0.0"
   }
 }
 ```
 
-### 6. Aplique as Migrations
+### appsettings.Development.json (Desenvolvimento)
 
-```bash
-cd src/DeepArchiveBridge.API
-dotnet ef database update
+```json
+{
+  "Logging": {
+    "LogLevel": {
+      "Default": "Debug",
+      "Microsoft.EntityFrameworkCore": "Debug"
+    }
+  },
+  "AllowedHosts": "*",
+  "ConnectionStrings": {
+    "DefaultConnection": "Data Source=archive.db;Cache=Shared"
+  },
+  "ArchivingSettings": {
+    "RetentionDaysHot": 30,
+    "DefaultPageSize": 50,
+    "MaxPageSize": 200,
+    "CommandTimeout": 60
+  },
+  "LoggingSettings": {
+    "UseStructuredLogging": true,
+    "LogHttpRequests": true,
+    "MinimumLogLevel": "Debug"
+  },
+  "ApiSettings": {
+    "EnableCors": true,
+    "AllowedOrigins": ["http://localhost:3000", "http://localhost:5000"],
+    "EnableHealthCheck": true,
+    "ApiVersion": "1.0.0-dev"
+  }
+}
 ```
 
-### 7. Execute a API
-
-```bash
-dotnet run
-```
-
-A API estará disponível em: **http://localhost:5000**
+**Configurações disponíveis:**
+- `ArchivingSettings` - Controla retenção, paginação e timeouts
+- `LoggingSettings` - Habilita logging estruturado
+- `ApiSettings` - CORS, Health Check e versionamento
 
 ---
 
-## 🐳 Docker & Docker Compose
+## 📚 Endpoints Principais
 
-### Executar com Docker Compose
+### Health Check
 
-O projeto inclui um `docker-compose.yml` pré-configurado com PostgreSQL:
+| Método | Endpoint | Descrição |
+|--------|----------|-----------|
+| `GET` | `/api/health` | Status completo com uptime e versão |
+| `GET` | `/api/health/ping` | Simples ping de verificação |
+
+### Vendas
+
+| Método | Endpoint | Descrição | Status Esperado |
+|--------|----------|-----------|-----------------|
+| `GET` | `/api/vendas/{id}` | Obtém detalhes de uma venda | 200, 404 |
+| `POST` | `/api/vendas/buscar` | Busca com filtros e paginação | 200, 400 |
+| `POST` | `/api/vendas` | Cria uma nova venda | 201, 400 |
+| `PUT` | `/api/vendas/{id}` | Atualiza uma venda | 200, 400, 404 |
+| `DELETE` | `/api/vendas/{id}` | Deleta uma venda | 200, 404 |
+
+### Arquivamento
+
+| Método | Endpoint | Descrição | Status Esperado |
+|--------|----------|-----------|-----------------|
+| `GET` | `/api/arquivamento/info` | Info sobre dados a arquivar | 200, 500 |
+| `POST` | `/api/arquivamento/executar` | Executa com confirmação prévia | 200, 500 |
+| `POST` | `/api/arquivamento/executar-automatico` | Para agendamento automático | 200, 500 |
+
+### Swagger UI
+
+Acesse a documentação **interativa** em: **http://localhost:5000/swagger**
+
+---
+
+## 🏗️ Boas Práticas Implementadas
+
+### 1. **Tratamento Global de Exceções**
+```csharp
+NotFoundException        → HTTP 404
+ValidationException     → HTTP 400
+ConflictException       → HTTP 409
+UnauthorizedException   → HTTP 401
+TimeoutException        → HTTP 504
+Exception genérica      → HTTP 500
+```
+
+### 2. **Validação com FluentValidation**
+- **BuscaVendaRequest**: Valida datas, ranges de paginação
+- **VendaValidator**: Valida dados obrigatórios, formatos
+- **VendaItemValidator**: Valida quantidades e preços
+
+### 3. **Configuration Pattern (Options)**
+- `ArchivingOptions` - Settings de arquivamento
+- `LoggingOptions` - Configurações de logging
+- `ApiOptions` - Configurações da API
+
+### 4. **CancellationToken**
+Todos os métodos async suportam cancelamento seguro:
+```csharp
+public async Task<List<Venda>> BuscarAsync(
+    BuscaVendaRequest request, 
+    EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto,
+    CancellationToken cancellationToken = default)
+```
+
+### 5. **Health Check**
+Monitoramento de saúde com uptime e versionamento automático
+
+### 6. **Logging Estruturado**
+Pronto para integração com Serilog e JSON estruturado
+
+---
+
+## 📂 Banco de Dados - SQLite
+
+### Arquivo de Banco de Dados
+
+```
+archive.db          # Banco de dados SQLite único (gerado automaticamente)
+```
+
+### Criação Automática
+
+O banco de dados é criado automaticamente na primeira execução via EF Core.
+
+---
+
+## 🔄 Fluxo de Arquivamento
+
+```
+┌──────────────────┐
+│   Nova Venda     │
+└────────┬─────────┘
+         │
+         ↓
+┌───────────────────────────┐
+│ SQLite (Hot Storage)      │ ← Dados recentes, acesso rápido
+│ (vendas < 90 dias)        │
+└───────────────────────────┘
+         │
+         │ (após 90 dias, automático)
+         ↓
+┌──────────────────────────┐
+│ Cold Storage              │ ← Arquivado, compactado
+│ (vendas > 90 dias)       │
+└──────────────────────────┘
+```
+
+---
+
+## 🚀 Build para Produção
+
+### Gerar Release Build
 
 ```bash
+dotnet build --configuration Release
+```
+
+### Publicar
+
+```bash
+dotnet publish --configuration Release --output ./publish
+```
+
+### Executar em Produção
+
+```bash
+cd publish
+dotnet DeepArchiveBridge.API.dll --urls "http://0.0.0.0:80"
+```
+
+---
+
+## 🧪 Testando a API
+
+### Via Swagger UI
+
+1. Acesse `http://localhost:5000/swagger`
+2. Clique em qualquer endpoint
+3. Clique em "Try It Out"
+4. Preencha os parâmetros
+5. Clique em "Execute"
+
+### Via Client HTTP do Visual Studio
+
+Crie um arquivo `.http`:
+
+```http
+@baseUrl = http://localhost:5000/api
+
+### Health Check
+GET {{baseUrl}}/health
+
+### Buscar vendas
+POST {{baseUrl}}/vendas/buscar
+Content-Type: application/json
+
+{
+  "dataInicio": "2026-01-01",
+  "dataFim": "2026-12-31",
+  "skip": 0,
+  "take": 10
+}
+
+### Informações de arquivamento
+GET {{baseUrl}}/arquivamento/info
+
+### Executar arquivamento
+POST {{baseUrl}}/arquivamento/executar-automatico
+```
+
+### Via cURL
+
+```bash
+# Health Check
+curl http://localhost:5000/api/health
+
+# Buscar vendas
+curl -X POST http://localhost:5000/api/vendas/buscar \
+  -H "Content-Type: application/json" \
+  -d '{"dataInicio":"2026-01-01","dataFim":"2026-12-31","skip":0,"take":10}'
+```
+
+---
+
+## 🤝 Contribuindo
+
+1. **Fork** o repositório
+2. Crie uma **branch** para sua feature (`git checkout -b feature/AmazingFeature`)
+3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
+4. **Push** para a branch (`git push origin feature/AmazingFeature`)
+5. Abra um **Pull Request**
+
+---
+
+## 📝 Licença
+
+Este projeto está licenciado sob a **MIT License** - veja o arquivo LICENSE para detalhes.
+
+---
+
+## 👨‍💻 Autor
+
+Desenvolvido com ❤️ usando **.NET 8**
 # Iniciar os serviços
 docker-compose up -d
 
