@@ -117,6 +117,8 @@ dotnet run
 A API estará disponível em: **http://localhost:5000**  
 Swagger UI disponível em: **http://localhost:5000/swagger**
 
+**Nota:** O banco de dados SQLite (`archive.db`) é criado automaticamente na primeira execução.
+
 ---
 
 ## 🚀 Estrutura de Configuração
@@ -189,7 +191,7 @@ Swagger UI disponível em: **http://localhost:5000/swagger**
 ```
 
 **Configurações disponíveis:**
-- `ArchivingSettings` - Controla retenção, paginação e timeouts
+- `ArchivingSettings` - Controla retenção (dias), paginação e timeouts
 - `LoggingSettings` - Habilita logging estruturado
 - `ApiSettings` - CORS, Health Check e versionamento
 
@@ -199,10 +201,10 @@ Swagger UI disponível em: **http://localhost:5000/swagger**
 
 ### Health Check
 
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/health` | Status completo com uptime e versão |
-| `GET` | `/api/health/ping` | Simples ping de verificação |
+| Método | Endpoint | Descrição | Status |
+|--------|----------|-----------|--------|
+| `GET` | `/api/health` | Status completo com uptime e versão | 200 |
+| `GET` | `/api/health/ping` | Simples ping de verificação | 200 |
 
 ### Vendas
 
@@ -220,7 +222,7 @@ Swagger UI disponível em: **http://localhost:5000/swagger**
 |--------|----------|-----------|-----------------|
 | `GET` | `/api/arquivamento/info` | Info sobre dados a arquivar | 200, 500 |
 | `POST` | `/api/arquivamento/executar` | Executa com confirmação prévia | 200, 500 |
-| `POST` | `/api/arquivamento/executar-automatico` | Para agendamento automático | 200, 500 |
+| `POST` | `/api/arquivamento/executar-automatico` | Executa sem confirmação (para agendamento) | 200, 500 |
 
 ### Swagger UI
 
@@ -240,17 +242,23 @@ TimeoutException        → HTTP 504
 Exception genérica      → HTTP 500
 ```
 
+Todas as exceções são capturadas pelo `GlobalExceptionHandlerMiddleware` que normaliza as respostas em um padrão `ApiResponse<T>`.
+
 ### 2. **Validação com FluentValidation**
-- **BuscaVendaRequest**: Valida datas, ranges de paginação
-- **VendaValidator**: Valida dados obrigatórios, formatos
-- **VendaItemValidator**: Valida quantidades e preços
+- **BuscaVendaRequest**: Valida datas, ranges de paginação (1-500)
+- **VendaValidator**: Valida dados obrigatórios, formatos, ranges
+- **VendaItemValidator**: Valida quantidades e preços positivos
+
+Validadores registrados via DI no `Program.cs` e aplicados automaticamente.
 
 ### 3. **Configuration Pattern (Options)**
-- `ArchivingOptions` - Settings de arquivamento
-- `LoggingOptions` - Configurações de logging
-- `ApiOptions` - Configurações da API
+- `ArchivingOptions` - Settings de arquivamento e paginação
+- `LoggingOptions` - Configurações de logging estruturado
+- `ApiOptions` - Configurações da API (CORS, Health Check, Versão)
 
-### 4. **CancellationToken**
+Acessível via `IOptions<T>` em qualquer serviço.
+
+### 4. **CancellationToken Support**
 Todos os métodos async suportam cancelamento seguro:
 ```csharp
 public async Task<List<Venda>> BuscarAsync(
@@ -260,10 +268,14 @@ public async Task<List<Venda>> BuscarAsync(
 ```
 
 ### 5. **Health Check**
-Monitoramento de saúde com uptime e versionamento automático
+Endpoint `/api/health` fornece:
+- Status da API (Healthy, Degraded, Unhealthy)
+- Timestamp UTC
+- Versão da API
+- Uptime (uso de memória)
 
 ### 6. **Logging Estruturado**
-Pronto para integração com Serilog e JSON estruturado
+Pronto para integração com **Serilog** e saída em JSON estruturado para melhor parsinge em agregadores de logs.
 
 ---
 
@@ -275,9 +287,16 @@ Pronto para integração com Serilog e JSON estruturado
 archive.db          # Banco de dados SQLite único (gerado automaticamente)
 ```
 
+**Características:**
+- ✅ Arquivo local, sem servidor separado
+- ✅ Performance otimizada para leitura/escrita
+- ✅ Backup simples (copiar arquivo)
+- ✅ Zero configuração necessária
+- ✅ Ideal para desenvolvimento e pequena escala
+
 ### Criação Automática
 
-O banco de dados é criado automaticamente na primeira execução via EF Core.
+O banco de dados é criado automaticamente na primeira execução via Entity Framework Core. Nenhuma migração manual necessária.
 
 ---
 
@@ -301,6 +320,12 @@ O banco de dados é criado automaticamente na primeira execução via EF Core.
 │ (vendas > 90 dias)       │
 └──────────────────────────┘
 ```
+
+**Processo automático:**
+1. API monitora vendas com mais de 90 dias
+2. Dados são compactados e movidos para Cold Storage
+3. Registros são removidos do Hot Storage
+4. Buscas futuras acessam Cold Storage automaticamente
 
 ---
 
@@ -339,13 +364,16 @@ dotnet DeepArchiveBridge.API.dll --urls "http://0.0.0.0:80"
 
 ### Via Client HTTP do Visual Studio
 
-Crie um arquivo `.http`:
+Crie um arquivo `.http` na raiz do projeto:
 
 ```http
 @baseUrl = http://localhost:5000/api
 
 ### Health Check
 GET {{baseUrl}}/health
+
+### Ping
+GET {{baseUrl}}/health/ping
 
 ### Buscar vendas
 POST {{baseUrl}}/vendas/buscar
@@ -358,10 +386,16 @@ Content-Type: application/json
   "take": 10
 }
 
+### Obter venda por ID
+GET {{baseUrl}}/vendas/1
+
 ### Informações de arquivamento
 GET {{baseUrl}}/arquivamento/info
 
-### Executar arquivamento
+### Executar arquivamento com confirmação
+POST {{baseUrl}}/arquivamento/executar
+
+### Executar arquivamento automático
 POST {{baseUrl}}/arquivamento/executar-automatico
 ```
 
@@ -375,6 +409,9 @@ curl http://localhost:5000/api/health
 curl -X POST http://localhost:5000/api/vendas/buscar \
   -H "Content-Type: application/json" \
   -d '{"dataInicio":"2026-01-01","dataFim":"2026-12-31","skip":0,"take":10}'
+
+# Info arquivamento
+curl http://localhost:5000/api/arquivamento/info
 ```
 
 ---
@@ -398,170 +435,3 @@ Este projeto está licenciado sob a **MIT License** - veja o arquivo LICENSE par
 ## 👨‍💻 Autor
 
 Desenvolvido com ❤️ usando **.NET 8**
-# Iniciar os serviços
-docker-compose up -d
-
-# Verificar logs
-docker-compose logs -f postgres
-
-# Parar os serviços
-docker-compose down
-```
-
-### Variáveis de Ambiente do PostgreSQL
-
-```yaml
-POSTGRES_USER: deeparchive_user
-POSTGRES_PASSWORD: secure_password_123
-POSTGRES_DB: deeparchive_db
-```
-
----
-
-## 📚 Endpoints Principais
-
-### Arquivamento
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/arquivamento/info` | Obtém informações sobre arquivamento |
-| `POST` | `/api/arquivamento/arquivar` | Executa arquivamento automático |
-
-### Vendas
-
-| Método | Endpoint | Descrição |
-|--------|----------|-----------|
-| `GET` | `/api/vendas` | Lista todas as vendas |
-| `GET` | `/api/vendas/{id}` | Obtém detalhes de uma venda |
-| `POST` | `/api/vendas` | Cria uma nova venda |
-| `PUT` | `/api/vendas/{id}` | Atualiza uma venda |
-| `DELETE` | `/api/vendas/{id}` | Deleta uma venda |
-
-### Swagger UI
-
-Acesse a documentação interativa em: **http://localhost:5000/swagger**
-
----
-
-## 🔄 Fluxo de Arquivamento
-
-```
-┌─────────────────┐
-│   Nova Venda    │
-└────────┬────────┘
-         │
-         ↓
-┌─────────────────────────────┐
-│  Armazenamento Quente (DB)  │ ← Acesso rápido
-└─────────────────────────────┘
-         │
-         │ (após 90 dias)
-         ↓
-┌──────────────────────────┐
-│ Armazenamento Frio (.zip)│ ← Arquivo compactado
-└──────────────────────────┘
-```
-
----
-
-## 📂 Estrutura de Configuração
-
-### appsettings.json
-
-```json
-{
-  "ConnectionStrings": {
-    "PostgreSQL": "Host=localhost;Database=deeparchive_db;Username=deeparchive_user;Password=secure_password_123"
-  },
-  "Logging": {
-    "LogLevel": {
-      "Default": "Information"
-    }
-  }
-}
-```
-
-### appsettings.Development.json
-
-```json
-{
-  "Logging": {
-    "LogLevel": {
-      "Default": "Debug",
-      "Microsoft": "Information"
-    }
-  }
-}
-```
-
----
-
-## 🧪 Testes
-
-Execute os testes do projeto:
-
-```bash
-dotnet test
-```
-
----
-
-## 🚀 Build para Produção
-
-### Gerar Release Build
-
-```bash
-dotnet build --configuration Release
-```
-
-### Publicar
-
-```bash
-dotnet publish --configuration Release --output ./publish
-```
-
----
-
-## 📋 Variáveis de Ambiente
-
-| Variável | Descrição | Padrão |
-|----------|-----------|--------|
-| `ASPNETCORE_ENVIRONMENT` | Ambiente de execução | `Development` |
-| `ConnectionStrings__PostgreSQL` | String de conexão | Veja appsettings.json |
-| `ASPNETCORE_URLS` | URLs da aplicação | `http://localhost:5000` |
-
----
-
-## 🤝 Contribuindo
-
-1. **Fork** o repositório
-2. Crie uma **branch** para sua feature (`git checkout -b feature/AmazingFeature`)
-3. **Commit** suas mudanças (`git commit -m 'Add some AmazingFeature'`)
-4. **Push** para a branch (`git push origin feature/AmazingFeature`)
-5. Abra um **Pull Request**
-
----
-
-## 📝 Licença
-
-Este projeto está licenciado sob a **MIT License** - veja o arquivo LICENSE para detalhes.
-
----
-
-## 👨‍💻 Contato & Suporte
-
-Se você tiver dúvidas, sugestões ou encontrar algum problema:
-
-- 📧 **Email**: daniel.azevedo081205@gmail.com
-- 🐛 **Issues**: [Reporte um bug](https://github.com/seu-usuario/DeepArchive-Bridge/issues)
-- 💬 **Discussões**: [Participe da comunidade](https://github.com/seu-usuario/DeepArchive-Bridge/discussions)
-
----
-
-<div align="center">
-
-**Desenvolvido com ❤️ usando .NET 8**
-
-[⭐ Se este projeto foi útil para você, considere dar uma estrela!](https://github.com/seu-usuario/DeepArchive-Bridge)
-
-</div>
