@@ -1,0 +1,33 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 18
+VisualStudioVersion = 18.5.11605.296 insiders
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeepArchiveBridge.Core", "src\DeepArchiveBridge.Core\DeepArchiveBridge.Core.csproj", "{A1C1E1F1-1A1A-1A1A-1A1A-1A1A1A1A1A1A}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeepArchiveBridge.Data", "src\DeepArchiveBridge.Data\DeepArchiveBridge.Data.csproj", "{B2C2E2F2-2B2B-2B2B-2B2B-2B2B2B2B2B2B}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "DeepArchiveBridge.API", "src\DeepArchiveBridge.API\DeepArchiveBridge.API.csproj", "{C3C3E3F3-3C3C-3C3C-3C3C-3C3C3C3C3C3C}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A1C1E1F1-1A1A-1A1A-1A1A-1A1A1A1A1A1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A1C1E1F1-1A1A-1A1A-1A1A-1A1A1A1A1A1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A1C1E1F1-1A1A-1A1A-1A1A-1A1A1A1A1A1A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A1C1E1F1-1A1A-1A1A-1A1A-1A1A1A1A1A1A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B2C2E2F2-2B2B-2B2B-2B2B-2B2B2B2B2B2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B2C2E2F2-2B2B-2B2B-2B2B-2B2B2B2B2B2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B2C2E2F2-2B2B-2B2B-2B2B-2B2B2B2B2B2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B2C2E2F2-2B2B-2B2B-2B2B-2B2B2B2B2B2B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C3C3E3F3-3C3C-3C3C-3C3C-3C3C3C3C3C3C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C3C3E3F3-3C3C-3C3C-3C3C-3C3C3C3C3C3C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C3C3E3F3-3C3C-3C3C-3C3C-3C3C3C3C3C3C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C3C3E3F3-3C3C-3C3C-3C3C-3C3C3C3C3C3C}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
