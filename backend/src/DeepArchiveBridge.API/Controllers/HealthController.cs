@@ -88,4 +88,19 @@ public class HealthStatus
     /// Uso de memória em MB
     /// </summary>
     public long MemoryMB { get; set; }
+
+    /// <summary>
+    /// Tempo gasto na verificação de saúde (ms)
+    /// </summary>
+    public long CheckDurationMs { get; set; }
+
+    /// <summary>
+    /// Quantidade de dependências saudáveis
+    /// </summary>
+    public int DependenciesHealthy { get; set; }
+
+    /// <summary>
+    /// Quantidade de dependências com problemas
+    /// </summary>
+    public int DependenciesUnhealthy { get; set; }
 }

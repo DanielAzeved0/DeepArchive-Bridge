@@ -7,13 +7,13 @@ import { ArquivamentoInfo, HealthStatus, Venda } from '@/types'
 // Componente de Card de Estatística
 function StatCard({ title, value, icon, color }: { title: string; value: string | number; icon: string; color: string }) {
   return (
-    <div className="card border-l-4" style={{ borderLeftColor: color }}>
+    <div className="bg-gray-700 rounded-lg p-6 border-l-4 border-gray-600 hover:border-opacity-100 transition" style={{ borderLeftColor: color }}>
       <div className="flex justify-between items-start">
-        <div>
-          <p className="text-gray-600 text-sm font-medium">{title}</p>
-          <p className="text-3xl font-bold mt-2">{value}</p>
+        <div className="flex-1">
+          <p className="text-gray-400 text-sm font-medium uppercase tracking-wide">{title}</p>
+          <p className="text-3xl font-bold mt-2 text-white">{value}</p>
         </div>
-        <span className="text-4xl">{icon}</span>
+        <span className="text-5xl opacity-20">{icon}</span>
       </div>
     </div>
   )
@@ -22,10 +22,10 @@ function StatCard({ title, value, icon, color }: { title: string; value: string 
 // Componente de Alerta
 function Alert({ tipo, mensagem }: { tipo: 'sucesso' | 'aviso' | 'erro' | 'info'; mensagem: string }) {
   const cores = {
-    sucesso: 'bg-green-50 border-green-200 text-green-800',
-    aviso: 'bg-yellow-50 border-yellow-200 text-yellow-800',
-    erro: 'bg-red-50 border-red-200 text-red-800',
-    info: 'bg-blue-50 border-blue-200 text-blue-800',
+    sucesso: 'bg-green-900/30 border-green-700 text-green-300',
+    aviso: 'bg-yellow-900/30 border-yellow-700 text-yellow-300',
+    erro: 'bg-red-900/30 border-red-700 text-red-300',
+    info: 'bg-blue-900/30 border-blue-700 text-blue-300',
   }
   
   return (
@@ -95,8 +95,8 @@ export default function Dashboard() {
     return (
       <div className="flex items-center justify-center min-h-screen">
         <div className="text-center">
-          <div className="animate-spin text-blue-600 text-4xl mb-4">⏳</div>
-          <p className="text-gray-600">Carregando dados...</p>
+          <div className="animate-spin text-blue-400 text-4xl mb-4">⏳</div>
+          <p className="text-gray-400">Carregando dados...</p>
         </div>
       </div>
     )
@@ -104,10 +104,12 @@ export default function Dashboard() {
 
   return (
     <div>
-      <h1 className="text-4xl font-bold mb-2">📊 Dashboard</h1>
-      <p className="text-gray-600 mb-8">
-        Bem-vindo ao DeepArchive-Bridge
-      </p>
+      <div className="mb-10">
+        <h1 className="text-5xl font-bold text-white mb-2">📊 Dashboard</h1>
+        <p className="text-gray-400 text-lg">
+          Bem-vindo ao DeepArchive-Bridge
+        </p>
+      </div>
 
       {/* Alertas */}
       {error && <Alert tipo="erro" mensagem={`Erro: ${error}`} />}
@@ -116,99 +118,107 @@ export default function Dashboard() {
       )}
 
       {/* Cards de Estatísticas */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <StatCard
           title="Total de Vendas"
-          value={archivingInfo?.totalVendas ?? 0}
+          value={archivingInfo?.vendaRelativosArmazem ?? 0}
           icon="📦"
           color="#3b82f6"
         />
         <StatCard
           title="Valor Total"
-          value={formatarMoeda(archivingInfo?.valor_total ?? 0)}
+          value={formatarMoeda(0)}
           icon="💰"
           color="#10b981"
         />
         <StatCard
           title="Vendas a Arquivar"
-          value={archivingInfo?.vendas_para_arquivar ?? 0}
+          value={archivingInfo?.vendaRelativosArmazem ?? 0}
           icon="🗂️"
           color="#f59e0b"
         />
         <StatCard
           title="Valor a Arquivar"
-          value={formatarMoeda(archivingInfo?.valor_para_arquivar ?? 0)}
+          value={formatarMoeda(0)}
           icon="❄️"
           color="#ef4444"
         />
       </div>
 
       {/* Seção de Ações */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
         {/* Info Arquivamento */}
-        <div className="card">
-          <h2 className="text-xl font-bold mb-4">🗂️ Arquivamento</h2>
+        <div className="bg-gray-700 rounded-lg p-6 border border-gray-600 hover:border-gray-500 transition">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            🗂️ Arquivamento
+          </h2>
           {archivingInfo ? (
-            <div className="space-y-2 text-sm">
-              <p>
-                <strong>Data Limite:</strong> {formatarData(archivingInfo.data_limite)}
-              </p>
-              <p>
-                <strong>Vendas Prontas:</strong> {archivingInfo.vendas_para_arquivar}
-              </p>
-              <p>
-                <strong>Valor:</strong> {formatarMoeda(archivingInfo.valor_para_arquivar)}
-              </p>
+            <div className="space-y-4 text-sm">
+              <div className="flex justify-between items-center bg-gray-600/50 p-3 rounded">
+                <span className="text-gray-400"><strong>Docs Cold:</strong></span>
+                <span className="text-white font-semibold">{archivingInfo.vendaRelativosArquivo}</span>
+              </div>
+              <div className="flex justify-between items-center bg-gray-600/50 p-3 rounded">
+                <span className="text-gray-400"><strong>Docs Hot:</strong></span>
+                <span className="text-white font-semibold">{archivingInfo.vendaRelativosArmazem}</span>
+              </div>
               <button
                 onClick={() => window.location.href = '/arquivamento'}
-                className="btn-primary w-full mt-4"
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition mt-4"
               >
                 ▶️ Gerenciar Arquivamento
               </button>
             </div>
           ) : (
-            <p className="text-gray-500">Carregando informações...</p>
+            <p className="text-gray-400">Carregando informações...</p>
           )}
         </div>
 
         {/* Health Status */}
-        <div className="card">
-          <h2 className="text-xl font-bold mb-4">🏥 Status da API</h2>
+        <div className="bg-gray-700 rounded-lg p-6 border border-gray-600 hover:border-gray-500 transition">
+          <h2 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+            🏥 Status da API
+          </h2>
           {healthStatus ? (
-            <div className="space-y-2 text-sm">
-              <p>
-                <strong>Status:</strong>{' '}
-                <span className="badge badge-success">{healthStatus.status}</span>
-              </p>
-              <p>
-                <strong>Versão:</strong> {healthStatus.apiVersion}
-              </p>
-              <p>
-                <strong>Memória:</strong> {healthStatus.uptime} MB
-              </p>
-              <p>
-                <strong>Timestamp:</strong> {formatarData(healthStatus.timestamp)}
-              </p>
+            <div className="space-y-4 text-sm">
+              <div className="flex justify-between items-center bg-gray-600/50 p-3 rounded">
+                <span className="text-gray-400"><strong>Status:</strong></span>
+                <span className={`font-semibold ${healthStatus.status === 'Healthy' ? 'text-green-400' : 'text-yellow-400'}`}>
+                  {healthStatus.status}
+                </span>
+              </div>
+              <div className="flex justify-between items-center bg-gray-600/50 p-3 rounded">
+                <span className="text-gray-400"><strong>Versão:</strong></span>
+                <span className="text-white">{healthStatus.apiVersion}</span>
+              </div>
+              <div className="flex justify-between items-center bg-gray-600/50 p-3 rounded">
+                <span className="text-gray-400"><strong>Memória:</strong></span>
+                <span className="text-white">{healthStatus.memoryMB} MB</span>
+              </div>
+              <div className="flex justify-between items-center bg-gray-600/50 p-3 rounded">
+                <span className="text-gray-400"><strong>Uptime:</strong></span>
+                <span className="text-white">{Math.floor(healthStatus.uptime / 3600)}h</span>
+              </div>
               <button
                 onClick={() => window.location.href = '/health'}
-                className="btn-secondary w-full mt-4"
+                className="w-full bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-lg transition mt-4"
               >
                 🔍 Ver Detalhes
               </button>
             </div>
           ) : (
-            <p className="text-gray-500">Carregando status...</p>
+            <p className="text-gray-400">Carregando status...</p>
           )}
         </div>
       </div>
 
       {/* Últimas Vendas */}
-      <div className="card mb-8">
+      <div className="bg-gray-700 rounded-lg p-6 border border-gray-600">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-xl font-bold">📋 Últimas Vendas</h2>
+          <h2 className="text-2xl font-bold text-white">📋 Últimas Vendas</h2>
           <button
             onClick={() => window.location.href = '/vendas'}
-            className="btn-primary text-sm"
+            className="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition text-sm"
           >
             Ver Todas →
           </button>
@@ -216,46 +226,33 @@ export default function Dashboard() {
 
         {ultimasVendas.length > 0 ? (
           <div className="overflow-x-auto">
-            <table className="w-full text-sm">
-              <thead>
-                <tr className="border-b">
-                  <th className="text-left py-3 px-4">ID</th>
-                  <th className="text-left py-3 px-4">Cliente</th>
-                  <th className="text-left py-3 px-4">Valor</th>
-                  <th className="text-left py-3 px-4">Data</th>
-                  <th className="text-left py-3 px-4">Status</th>
-                  <th className="text-left py-3 px-4">Ação</th>
+            <table className="w-full text-sm text-gray-300">
+              <thead className="border-b border-gray-600">
+                <tr>
+                  <th className="text-left py-4 px-4 text-white font-semibold">ID</th>
+                  <th className="text-left py-4 px-4 text-white font-semibold">Cliente</th>
+                  <th className="text-left py-4 px-4 text-white font-semibold">Valor</th>
+                  <th className="text-left py-4 px-4 text-white font-semibold">Data</th>
+                  <th className="text-left py-4 px-4 text-white font-semibold">Status</th>
                 </tr>
               </thead>
               <tbody>
                 {ultimasVendas.map((venda) => (
-                  <tr key={venda.id} className="border-b hover:bg-gray-50">
-                    <td className="py-3 px-4">#{venda.id}</td>
-                    <td className="py-3 px-4">{venda.clienteNome}</td>
-                    <td className="py-3 px-4">{formatarMoeda(venda.valor)}</td>
-                    <td className="py-3 px-4">{formatarData(venda.dataVenda)}</td>
-                    <td className="py-3 px-4">
-                      <span
-                        className={`badge ${
-                          venda.status === 'Confirmada'
-                            ? 'badge-success'
-                            : venda.status === 'Pendente'
-                            ? 'badge-warning'
-                            : venda.status === 'Cancelada'
-                            ? 'badge-danger'
-                            : 'badge-info'
-                        }`}
-                      >
+                  <tr key={venda.id} className="border-b border-gray-600 hover:bg-gray-600/50 transition">
+                    <td className="py-4 px-4 text-blue-400">#{venda.id}</td>
+                    <td className="py-4 px-4">{venda.clienteNome}</td>
+                    <td className="py-4 px-4 text-green-400 font-semibold">{formatarMoeda(venda.valor)}</td>
+                    <td className="py-4 px-4 text-gray-400">{formatarData(venda.dataCriacao)}</td>
+                    <td className="py-4 px-4">
+                      <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+                        venda.status === 'Processada'
+                          ? 'bg-green-900/50 text-green-300'
+                          : venda.status === 'Pendente'
+                          ? 'bg-yellow-900/50 text-yellow-300'
+                          : 'bg-gray-600/50 text-gray-300'
+                      }`}>
                         {venda.status}
                       </span>
-                    </td>
-                    <td className="py-3 px-4">
-                      <a
-                        href={`/vendas/${venda.id}`}
-                        className="text-blue-600 hover:underline"
-                      >
-                        Ver →
-                      </a>
                     </td>
                   </tr>
                 ))}
@@ -263,43 +260,8 @@ export default function Dashboard() {
             </table>
           </div>
         ) : (
-          <p className="text-gray-500 text-center py-8">Nenhuma venda encontrada</p>
+          <p className="text-center text-gray-400 py-8">Nenhuma venda encontrada</p>
         )}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="bg-blue-50 border border-blue-200 rounded-lg p-6">
-        <h2 className="text-lg font-bold mb-4">⚡ Ações Rápidas</h2>
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-          <a
-            href="/vendas/novo"
-            className="card text-center hover:shadow-lg transition-shadow cursor-pointer"
-          >
-            <div className="text-3xl mb-2">📝</div>
-            <p className="font-semibold">Nova Venda</p>
-          </a>
-          <a
-            href="/vendas"
-            className="card text-center hover:shadow-lg transition-shadow cursor-pointer"
-          >
-            <div className="text-3xl mb-2">📋</div>
-            <p className="font-semibold">Ver Vendas</p>
-          </a>
-          <a
-            href="/arquivamento"
-            className="card text-center hover:shadow-lg transition-shadow cursor-pointer"
-          >
-            <div className="text-3xl mb-2">🗂️</div>
-            <p className="font-semibold">Arquivar</p>
-          </a>
-          <a
-            href="/health"
-            className="card text-center hover:shadow-lg transition-shadow cursor-pointer"
-          >
-            <div className="text-3xl mb-2">🏥</div>
-            <p className="font-semibold">Status API</p>
-          </a>
-        </div>
       </div>
     </div>
   )
