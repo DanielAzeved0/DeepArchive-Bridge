@@ -3815,11 +3815,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+      "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
       "projectName": "DeepArchiveBridge.API",
-      "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+      "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
       "packagesPath": "C:\\Users\\Famili Azevedo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\obj\\",
+      "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
         "C:\\Users\\Famili Azevedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -3836,11 +3836,11 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
-              "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj"
+            "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
+              "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj"
             },
-            "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {
-              "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj"
+            "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {
+              "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj"
             }
           }
         }

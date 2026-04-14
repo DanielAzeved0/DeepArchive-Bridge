@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {}
+    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {}
   },
   "projects": {
-    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
+    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+        "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
         "projectName": "DeepArchiveBridge.Core",
-        "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
+        "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj",
         "packagesPath": "C:\\Users\\Famili Azevedo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\obj\\",
+        "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Famili Azevedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -71,14 +71,14 @@
         }
       }
     },
-    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {
+    "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+        "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
         "projectName": "DeepArchiveBridge.Data",
-        "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+        "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
         "packagesPath": "C:\\Users\\Famili Azevedo\\.nuget\\packages\\",
-        "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\obj\\",
+        "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\Famili Azevedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
@@ -95,8 +95,8 @@
           "net8.0": {
             "targetAlias": "net8.0",
             "projectReferences": {
-              "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
-                "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj"
+              "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
+                "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj"
               }
             }
           }

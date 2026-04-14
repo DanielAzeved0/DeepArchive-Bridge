@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Q5iRJIAM/fU=",
+  "dgSpecHash": "5wmGUqES3d8=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+  "projectFilePath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\apache.arrow\\2.0.0\\apache.arrow.2.0.0.nupkg.sha512",
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",

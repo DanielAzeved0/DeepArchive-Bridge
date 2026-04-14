@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "SRMiYBIyx2c=",
+  "dgSpecHash": "S5V0Zg0YSEo=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
+  "projectFilePath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\apache.arrow\\2.0.0\\apache.arrow.2.0.0.nupkg.sha512",
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
