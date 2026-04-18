@@ -134,7 +134,12 @@ export const vendaService = {
   },
 
   atualizar: async (id: number, venda: Venda) => {
-    const response = await api.put<ApiResponse<object>>(`/vendas/${id}`, venda)
+    const response = await api.put<ApiResponse<object>>(`/vendas/${id}`, { ...venda, id })
+    return response.data
+  },
+
+  aprovar: async (id: number) => {
+    const response = await api.post<ApiResponse<object>>(`/vendas/${id}/aprovar`, {})
     return response.data
   },
 

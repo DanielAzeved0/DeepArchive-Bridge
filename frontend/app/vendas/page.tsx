@@ -14,17 +14,19 @@ interface FilterOptions {
   status: string
   dataInicio: string
   dataFim: string
+  valorMinimo: string
+  valorMaximo: string
 }
 
 // Mapear números de status para strings legíveis
 const STATUS_MAP: Record<number | string, string> = {
   1: 'Pendente',
-  2: 'Confirmada',
-  3: 'Entregue',
+  2: 'Finalizada',
+  3: 'Em Processo',
   4: 'Cancelada',
   'pendente': 'Pendente',
-  'confirmada': 'Confirmada',
-  'entregue': 'Entregue',
+  'confirmada': 'Finalizada',
+  'em processo': 'Em Processo',
   'cancelada': 'Cancelada',
 }
 
@@ -40,13 +42,15 @@ export default function VendasPage() {
   const [totalPaginas, setTotalPaginas] = useState(1)
   const [sortField, setSortField] = useState<SortField>('dataVenda')
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
-  const itensPorPagina = 10
+  const [itensPorPagina, setItensPorPagina] = useState(10)
 
   const [filtros, setFiltros] = useState<FilterOptions>({
     search: '',
     status: 'todas',
     dataInicio: '',
     dataFim: '',
+    valorMinimo: '',
+    valorMaximo: '',
   })
 
   // Calcular data padrão (últimos 90 dias)
@@ -99,6 +103,16 @@ export default function VendasPage() {
           )
         }
 
+        // Aplicar filtro de valor
+        if (filtros.valorMinimo) {
+          const min = parseFloat(filtros.valorMinimo)
+          dadosOrdenados = dadosOrdenados.filter((venda) => venda.valor >= min)
+        }
+        if (filtros.valorMaximo) {
+          const max = parseFloat(filtros.valorMaximo)
+          dadosOrdenados = dadosOrdenados.filter((venda) => venda.valor <= max)
+        }
+
         // Aplicar ordenação
         dadosOrdenados.sort((a, b) => {
           let valorA: string | number = a[sortField] || ''
@@ -135,7 +149,7 @@ export default function VendasPage() {
     if (filtros.dataInicio && filtros.dataFim) {
       carregarVendas()
     }
-  }, [paginaAtual, filtros.dataInicio, filtros.dataFim, filtros.search, filtros.status, sortField, sortOrder])
+  }, [paginaAtual, filtros, sortField, sortOrder, itensPorPagina])
 
   const handleSort = (field: SortField) => {
     if (sortField === field) {
@@ -149,12 +163,10 @@ export default function VendasPage() {
   const getStatusColor = (status: number | string) => {
     const statusStr = getStatusString(status).toLowerCase()
     const colors: Record<string, string> = {
-      entregue: 'bg-green-100 text-green-800',
-      confirmada: 'bg-green-100 text-green-800',
+      finalizada: 'bg-green-100 text-green-800',
+      'em processo': 'bg-blue-100 text-blue-800',
       pendente: 'bg-yellow-100 text-yellow-800',
       cancelada: 'bg-red-100 text-red-800',
-      arquivada: 'bg-blue-100 text-blue-800',
-      processando: 'bg-purple-100 text-purple-800',
     }
     return colors[statusStr] || 'bg-gray-100 text-gray-800'
   }
@@ -162,6 +174,29 @@ export default function VendasPage() {
   const getSortIcon = (field: SortField) => {
     if (sortField !== field) return '↕️'
     return sortOrder === 'asc' ? '↑' : '↓'
+  }
+
+  // Contar filtros ativos
+  const filtrosAtivos = [
+    filtros.search ? 1 : 0,
+    filtros.status !== 'todas' ? 1 : 0,
+    filtros.valorMinimo ? 1 : 0,
+    filtros.valorMaximo ? 1 : 0,
+  ].reduce((a, b) => a + b, 0)
+
+  // Limpar filtros
+  const limparFiltros = () => {
+    const hoje = new Date()
+    const noventa_dias_atras = new Date(hoje.getTime() - 90 * 24 * 60 * 60 * 1000)
+    setFiltros({
+      search: '',
+      status: 'todas',
+      dataInicio: noventa_dias_atras.toISOString().split('T')[0],
+      dataFim: hoje.toISOString().split('T')[0],
+      valorMinimo: '',
+      valorMaximo: '',
+    })
+    setPaginaAtual(1)
   }
 
   const vendasPaginadas = vendas.slice(
@@ -200,9 +235,11 @@ export default function VendasPage() {
 
       {/* Filters Section */}
       <div className="card mb-6">
-        <h2 className="text-lg font-semibold text-gray-900 mb-4">🔍 Filtros</h2>
+        <div className="flex justify-between items-center mb-4">
+          <h2 className="text-lg font-semibold text-gray-900">🔍 Filtros {filtrosAtivos > 0 && <span className="ml-2 px-2 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full">{filtrosAtivos} ativo{filtrosAtivos !== 1 ? 's' : ''}</span>}</h2>
+        </div>
         
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
           {/* Search */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
@@ -234,15 +271,74 @@ export default function VendasPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value="todas">Todas</option>
-              <option value="finalizada">✅ Finalizada</option>
-              <option value="pendente">⏳ Pendente</option>
+              <option value="finalizada">✅ Finalizada</option>              <option value="em processo">🔄 Em Processo</option>              <option value="pendente">⏳ Pendente</option>
               <option value="cancelada">❌ Cancelada</option>
-              <option value="arquivada">🗂️ Arquivada</option>
-              <option value="processando">⚙️ Processando</option>
             </select>
           </div>
 
-          {/* Data Início */}
+          {/* Valor Mínimo */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Valor Mín.
+            </label>
+            <input
+              type="number"
+              placeholder="R$ 0,00"
+              value={filtros.valorMinimo}
+              onChange={(e) => {
+                setFiltros((prev) => ({ ...prev, valorMinimo: e.target.value }))
+                setPaginaAtual(1)
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Valor Máximo */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Valor Máx.
+            </label>
+            <input
+              type="number"
+              placeholder="R$ 9.999.999,00"
+              value={filtros.valorMaximo}
+              onChange={(e) => {
+                setFiltros((prev) => ({ ...prev, valorMaximo: e.target.value }))
+                setPaginaAtual(1)
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            />
+          </div>
+
+          {/* Data Período */}
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Período (dias)
+            </label>
+            <select
+              onChange={(e) => {
+                const days = parseInt(e.target.value)
+                const hoje = new Date()
+                const dataAtras = new Date(hoje.getTime() - days * 24 * 60 * 60 * 1000)
+                setFiltros((prev) => ({
+                  ...prev,
+                  dataInicio: dataAtras.toISOString().split('T')[0],
+                  dataFim: hoje.toISOString().split('T')[0],
+                }))
+                setPaginaAtual(1)
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value="90">Últimos 90 dias</option>
+              <option value="30">Últimos 30 dias</option>
+              <option value="7">Últimos 7 dias</option>
+              <option value="1">Hoje</option>
+            </select>
+          </div>
+        </div>
+
+        {/* Datas Customizadas - Segunda linha */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-4">
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Data Início
@@ -258,7 +354,6 @@ export default function VendasPage() {
             />
           </div>
 
-          {/* Data Fim */}
           <div>
             <label className="block text-sm font-medium text-gray-700 mb-1">
               Data Fim
@@ -273,18 +368,47 @@ export default function VendasPage() {
               className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
+          <div>
+            <label className="block text-sm font-medium text-gray-700 mb-1">
+              Itens por Página
+            </label>
+            <select
+              value={itensPorPagina}
+              onChange={(e) => {
+                setItensPorPagina(parseInt(e.target.value))
+                setPaginaAtual(1)
+              }}
+              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+            >
+              <option value={5}>5 itens</option>
+              <option value={10}>10 itens</option>
+              <option value={25}>25 itens</option>
+              <option value={50}>50 itens</option>
+            </select>
+          </div>
         </div>
 
-        {/* Reset Button */}
-        <button
-          onClick={() => {
-            setPaginaAtual(1)
-            carregarVendas()
-          }}
-          className="mt-4 px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-md transition"
-        >
-          🔄 Atualizar
-        </button>
+        {/* Action Buttons */}
+        <div className="flex gap-3 mt-4">
+          <button
+            onClick={() => {
+              setPaginaAtual(1)
+              carregarVendas()
+            }}
+            className="px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md transition font-semibold"
+          >
+            🔄 Atualizar
+          </button>
+          {filtrosAtivos > 0 && (
+            <button
+              onClick={limparFiltros}
+              className="px-4 py-2 bg-gray-400 hover:bg-gray-500 text-white rounded-md transition font-semibold"
+            >
+              ✕ Limpar Filtros
+            </button>
+          )}
+        </div>
       </div>
 
       {/* Table Section */}
@@ -370,13 +494,21 @@ export default function VendasPage() {
                             ✏️ Editar
                           </Link>
                           <button
-                            onClick={() => {
-                              if (confirm('Tem certeza que deseja deletar?')) {
-                                // TODO: Implementar delete
-                                alert('Delete não implementado ainda')
+                            onClick={async () => {
+                              if (confirm('Tem certeza que deseja deletar esta venda?')) {
+                                try {
+                                  setCarregando(true)
+                                  await vendaService.deletar(venda.id)
+                                  alert('Venda deletada com sucesso!')
+                                  carregarVendas()
+                                } catch (error) {
+                                  alert('Erro ao deletar venda: ' + (error instanceof Error ? error.message : 'Erro desconhecido'))
+                                  setCarregando(false)
+                                }
                               }
                             }}
-                            className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs font-semibold"
+                            className="px-2 py-1 bg-red-500 hover:bg-red-600 text-white rounded text-xs font-semibold disabled:opacity-50"
+                            disabled={carregando}
                           >
                             🗑️ Deletar
                           </button>

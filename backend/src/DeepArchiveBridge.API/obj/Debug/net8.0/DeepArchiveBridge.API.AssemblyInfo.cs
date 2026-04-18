@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("DeepArchiveBridge.API")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+ed2e10839ab5b51a30ae556ca2ed1eca48ef49ba")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+7f9df180a05b104e30aa08b79aa318a3a0f92d52")]
 [assembly: System.Reflection.AssemblyProductAttribute("DeepArchiveBridge.API")]
 [assembly: System.Reflection.AssemblyTitleAttribute("DeepArchiveBridge.API")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

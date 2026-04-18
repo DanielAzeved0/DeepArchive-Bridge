@@ -55,3 +55,155 @@ body {
     @apply badge bg-blue-100 text-blue-800;
   }
 }
+
+/* Print Styles */
+@media print {
+  /* Hide non-essential elements */
+  .no-print,
+  .btn-primary,
+  .btn-secondary,
+  nav,
+  header,
+  footer,
+  .sidebar,
+  .navigation {
+    display: none !important;
+  }
+
+  /* Configure page layout */
+  body {
+    background-color: white;
+    color: #000;
+    font-size: 12pt;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+  }
+
+  .min-h-screen {
+    min-height: auto;
+  }
+
+  /* Print container */
+  .print-container {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0.5in;
+    background: white;
+  }
+
+  /* Cards formatting */
+  .card {
+    page-break-inside: avoid;
+    border: 1px solid #333;
+    background: white;
+    color: black;
+    box-shadow: none;
+  }
+
+  /* Table formatting */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    page-break-inside: avoid;
+  }
+
+  table th,
+  table td {
+    border: 1px solid #333;
+    padding: 8px;
+    text-align: left;
+  }
+
+  table th {
+    background-color: #f0f0f0;
+    font-weight: bold;
+  }
+
+  /* Heading formatting */
+  h1,
+  h2,
+  h3 {
+    page-break-after: avoid;
+    margin: 0;
+  }
+
+  h1 {
+    font-size: 24pt;
+    margin-bottom: 12pt;
+  }
+
+  h2 {
+    font-size: 18pt;
+    margin-bottom: 8pt;
+  }
+
+  h3 {
+    font-size: 14pt;
+    margin-bottom: 6pt;
+  }
+
+  /* Remove background colors except where important */
+  .bg-gray-50,
+  .bg-blue-50,
+  .bg-yellow-50,
+  .bg-red-50,
+  .bg-green-50,
+  .bg-purple-50 {
+    background-color: white !important;
+  }
+
+  /* Keep border colors but remove background tints */
+  .border-l-4 {
+    border-left-width: 2pt;
+    border-left-style: solid;
+  }
+
+  /* Text colors remain but fonts are adjusted */
+  .text-blue-600,
+  .text-green-600,
+  .text-red-600 {
+    color: #000;
+  }
+
+  /* Ensure links are visible */
+  a {
+    color: #000;
+    text-decoration: underline;
+  }
+
+  /* Grid adjustments for print */
+  .grid {
+    display: block !important;
+  }
+
+  /* Print specific elements */
+  .print-only {
+    display: block !important;
+  }
+
+  /* Spacing for print */
+  .space-y-6 > * + * {
+    margin-top: 12pt;
+  }
+
+  /* Print header for venda */
+  .print-header {
+    border-bottom: 2pt solid #000;
+    padding-bottom: 12pt;
+    margin-bottom: 12pt;
+  }
+
+  /* Print footer */
+  .print-footer {
+    border-top: 2pt solid #000;
+    padding-top: 12pt;
+    margin-top: 12pt;
+    text-align: center;
+    font-size: 10pt;
+  }
+}

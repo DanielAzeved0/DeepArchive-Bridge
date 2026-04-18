@@ -14,12 +14,12 @@ interface VendaDetalhes extends Venda {
 // Mapear números de status para strings legíveis
 const STATUS_MAP: Record<number | string, string> = {
   1: 'Pendente',
-  2: 'Confirmada',
-  3: 'Entregue',
+  2: 'Finalizada',
+  3: 'Em Processo',
   4: 'Cancelada',
   'pendente': 'Pendente',
-  'confirmada': 'Confirmada',
-  'entregue': 'Entregue',
+  'finalizada': 'Finalizada',
+  'em processo': 'Em Processo',
   'cancelada': 'Cancelada',
 }
 
@@ -65,12 +65,10 @@ export default function VendaDetalhesPage() {
   const getStatusColor = (status: number | string) => {
     const statusStr = getStatusString(status).toLowerCase()
     const colors: Record<string, { bg: string; badge: string; icon: string }> = {
-      entregue: { bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: '✅' },
-      confirmada: { bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: '✅' },
+      finalizada: { bg: 'bg-green-50', badge: 'bg-green-100 text-green-800', icon: '✅' },
+      'em processo': { bg: 'bg-blue-50', badge: 'bg-blue-100 text-blue-800', icon: '🔄' },
       pendente: { bg: 'bg-yellow-50', badge: 'bg-yellow-100 text-yellow-800', icon: '⏳' },
       cancelada: { bg: 'bg-red-50', badge: 'bg-red-100 text-red-800', icon: '❌' },
-      arquivada: { bg: 'bg-blue-50', badge: 'bg-blue-100 text-blue-800', icon: '🗂️' },
-      processando: { bg: 'bg-purple-50', badge: 'bg-purple-100 text-purple-800', icon: '⚙️' },
     }
     return colors[statusStr] || { bg: 'bg-gray-50', badge: 'bg-gray-100 text-gray-800', icon: '❓' }
   }
@@ -111,7 +109,7 @@ export default function VendaDetalhesPage() {
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
       {/* Header com Breadcrumb */}
-      <div className="mb-8">
+      <div className="mb-8 no-print">
         <div className="flex items-center gap-2 text-sm text-gray-600 mb-4">
           <Link href="/vendas" className="hover:text-blue-600">
             📋 Vendas
@@ -331,7 +329,7 @@ export default function VendaDetalhesPage() {
           </div>
 
           {/* Card - Status & Ações */}
-          <div className="card">
+          <div className="card no-print">
             <h3 className="text-lg font-bold text-gray-900 mb-4">⚙️ Ações</h3>
 
             <div className="space-y-2">
@@ -343,24 +341,47 @@ export default function VendaDetalhesPage() {
               </Link>
 
               <button
-                onClick={() => {
+                onClick={async () => {
                   if (confirm('Tem certeza que deseja deletar esta venda?')) {
-                    // TODO: Implementar delete
-                    alert('Delete será implementado em breve')
+                    try {
+                      setCarregando(true)
+                      await vendaService.deletar(parseInt(vendaId))
+                      alert('Venda deletada com sucesso!')
+                      setTimeout(() => window.location.href = '/vendas', 1000)
+                    } catch (error) {
+                      alert('Erro ao deletar venda: ' + (error instanceof Error ? error.message : 'Erro desconhecido'))
+                      setCarregando(false)
+                    }
                   }
                 }}
-                className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition"
+                className="w-full px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg font-semibold transition disabled:opacity-50"
+                disabled={carregando}
               >
                 🗑️ Deletar
               </button>
 
               {venda.status === 'Pendente' && (
                 <button
-                  onClick={() => {
-                    // TODO: Implementar aprovação
-                    alert('Aprovação será implementada em breve')
+                  onClick={async () => {
+                    if (confirm('Tem certeza que deseja aprovar esta venda?')) {
+                      try {
+                        setCarregando(true)
+                        await vendaService.aprovar(parseInt(vendaId))
+                        alert('Venda aprovada com sucesso!')
+                        // Recarregar venda para atualizar status
+                        const response = await vendaService.obterPorId(parseInt(vendaId))
+                        if (response.sucesso && response.dados) {
+                          setVenda(response.dados)
+                        }
+                        setCarregando(false)
+                      } catch (error) {
+                        alert('Erro ao aprovar venda: ' + (error instanceof Error ? error.message : 'Erro desconhecido'))
+                        setCarregando(false)
+                      }
+                    }
                   }}
-                  className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition"
+                  className="w-full px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold transition disabled:opacity-50"
+                  disabled={carregando}
                 >
                   ✅ Aprovar
                 </button>
@@ -368,10 +389,23 @@ export default function VendaDetalhesPage() {
 
               <button
                 onClick={() => {
-                  // TODO: Implementar print
+                  // Adicionar informações de impressão
+                  const printTitle = `Venda #${venda.id} - ${venda.clienteNome}`
+                  const printDate = new Date().toLocaleString('pt-BR')
+                  
+                  // Modificar título da página para impressão
+                  const originalTitle = document.title
+                  document.title = printTitle
+                  
+                  // Chamar impressão
                   window.print()
+                  
+                  // Restaurar título
+                  setTimeout(() => {
+                    document.title = originalTitle
+                  }, 100)
                 }}
-                className="w-full px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold transition"
+                className="w-full px-4 py-2 bg-gray-500 hover:bg-gray-600 text-white rounded-lg font-semibold transition no-print"
               >
                 🖨️ Imprimir
               </button>

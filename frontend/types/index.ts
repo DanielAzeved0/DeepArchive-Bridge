@@ -32,7 +32,7 @@ export interface Venda {
   clienteId: string
   clienteNome: string
   valor: number
-  status: 'Pendente' | 'Processada' | 'Arquivada'
+  status: 'Pendente' | 'Em Processo' | 'Finalizada' | 'Cancelada'
   dataCriacao: string
   dataModificacao?: string
   itens: VendaItem[]
@@ -64,12 +64,25 @@ export interface UpdateVendaRequest {
   observacoes?: string
 }
 
+// Type aliases para compatibilidade
+export type VendaRequest = CreateVendaRequest & { id?: number }
+export type VendaItemRequest = VendaItem
+
 export interface ArquivamentoInfo {
-  vendaRelativosArmazem: number
-  vendaRelativosArquivo: number
-  ultimoProcessamento?: string
-  proximoProcessamento?: string
-  statusProcessamento: 'Ativo' | 'Pausado' | 'Erro'
+  totalVendas: number
+  vendasParaArquivar: number
+  valorTotal: number
+  valorAArquivar: number
+  dataMaisAntiga: string
+  dataLimite: string
+  mensagem: string
+}
+
+export interface ScheduleConfig {
+  enabled: boolean
+  hour: number // 0-23
+  minute: number // 0-59
+  daysOfWeek: number[] // 0-6 (domingo a sábado)
 }
 
 export interface LoginRequest {

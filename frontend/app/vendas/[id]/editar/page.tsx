@@ -23,7 +23,15 @@ export default function EditarVendaPage() {
         const response = await vendaService.obterPorId(parseInt(vendaId))
 
         if (response.sucesso && response.dados) {
-          setVenda(response.dados)
+          // Mapear 'valor' para 'preco' se necessário
+          const vendaProcessada = {
+            ...response.dados,
+            itens: response.dados.itens?.map((item: any) => ({
+              ...item,
+              preco: item.preco || item.valor || 0
+            })) || []
+          }
+          setVenda(vendaProcessada)
         } else {
           setErro(response.mensagem || 'Erro ao carregar venda')
         }

@@ -127,19 +127,19 @@ export default function Dashboard() {
         />
         <StatCard
           title="Valor Total"
-          value={formatarMoeda(0)}
+          value={formatarMoeda(archivingInfo?.valorTotal ?? 0)}
           icon="💰"
           color="#10b981"
         />
         <StatCard
           title="Vendas a Arquivar"
-          value={archivingInfo?.vendaRelativosArmazem ?? 0}
+          value={archivingInfo?.vendasParaArquivar ?? 0}
           icon="🗂️"
           color="#f59e0b"
         />
         <StatCard
           title="Valor a Arquivar"
-          value={formatarMoeda(0)}
+          value={formatarMoeda(archivingInfo?.valorAArquivar ?? 0)}
           icon="❄️"
           color="#ef4444"
         />

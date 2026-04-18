@@ -18,8 +18,30 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
   const [dataVenda, setDataVenda] = useState(
     vendaInicial?.dataVenda ? vendaInicial.dataVenda.split('T')[0] : new Date().toISOString().split('T')[0]
   )
+  // Converter status do backend (número) para frontend (string)
+  const getStatusInitial = (): 'Pendente' | 'Em Processo' | 'Finalizada' | 'Cancelada' => {
+    if (!vendaInicial?.status) return 'Pendente'
+    
+    const statusMap: Record<number | string, 'Pendente' | 'Em Processo' | 'Finalizada' | 'Cancelada'> = {
+      1: 'Pendente',
+      2: 'Finalizada',
+      3: 'Em Processo',
+      4: 'Cancelada',
+      'Pendente': 'Pendente',
+      'Confirmada': 'Finalizada',
+      'Finalizada': 'Finalizada',
+      'Em Processo': 'Em Processo',
+      'Cancelada': 'Cancelada'
+    }
+    
+    return statusMap[vendaInicial.status] || 'Pendente'
+  }
+
+  const [status, setStatus] = useState<'Pendente' | 'Em Processo' | 'Finalizada' | 'Cancelada'>(
+    getStatusInitial()
+  )
   const [itens, setItens] = useState<(VendaItem & { id?: number })[]>(
-    vendaInicial?.itens || [{ id: 0, produto: '', precoUnitario: 0, quantidade: 1 }]
+    vendaInicial?.itens || [{ id: 0, descricao: '', preco: 0, quantidade: 1 }]
   )
 
   const [carregando, setCarregando] = useState(false)
@@ -33,8 +55,8 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
     if (itens.length === 0) return 'Adicione pelo menos um item'
     
     for (let item of itens) {
-      if (!item.produto?.trim()) return 'Todos os itens devem ter descrição'
-      if (!item.precoUnitario || item.precoUnitario <= 0) return 'Valor do item deve ser maior que 0'
+      if (!item.descricao?.trim()) return 'Todos os itens devem ter descrição'
+      if (!item.preco || item.preco <= 0) return 'Valor do item deve ser maior que 0'
       if (!item.quantidade || item.quantidade <= 0) return 'Quantidade deve ser maior que 0'
     }
     
@@ -43,7 +65,7 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
 
   // Handlers para itens
   const adicionarItem = () => {
-    setItens([...itens, { id: 0, produto: '', precoUnitario: 0, quantidade: 1 }])
+    setItens([...itens, { id: 0, descricao: '', preco: 0, quantidade: 1 }])
   }
 
   const removerItem = (index: number) => {
@@ -75,15 +97,23 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
       setErro(null)
       setSucesso(false)
 
+      const statusMap: Record<string, number> = {
+        'Pendente': 1,
+        'Em Processo': 3,
+        'Finalizada': 2,
+        'Cancelada': 4
+      }
+
       const dadosVenda: VendaRequest = {
+        clienteId: vendaInicial?.clienteId || '',
         clienteNome,
         dataVenda: new Date(dataVenda).toISOString(),
-        valor: itens.reduce((acc, item) => acc + item.precoUnitario * item.quantidade, 0),
-        status: 1, // 1 = Pendente
+        valor: itens.reduce((acc, item) => acc + item.preco * item.quantidade, 0),
+        status: statusMap[status] as any,
         itens: itens.map(({ id, ...rest }) => ({
-          descricao: rest.produto,
-          valor: rest.precoUnitario,
+          descricao: rest.descricao,
           quantidade: rest.quantidade,
+          valor: rest.preco,
         })),
       }
 
@@ -114,7 +144,7 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
     }
   }
 
-  const totalVenda = itens.reduce((acc, item) => acc + (item.precoUnitario * item.quantidade || 0), 0)
+  const totalVenda = itens.reduce((acc, item) => acc + (item.preco * item.quantidade || 0), 0)
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -185,6 +215,26 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
                   disabled={carregando}
                 />
               </div>
+
+              {/* Status - apenas em modo editar */}
+              {modo === 'editar' && (
+                <div>
+                  <label className="block text-sm font-medium text-gray-700 mb-2">
+                    Status
+                  </label>
+                  <select
+                    value={status}
+                    onChange={(e) => setStatus(e.target.value as 'Pendente' | 'Em Processo' | 'Finalizada' | 'Cancelada')}
+                    className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    disabled={carregando}
+                  >
+                    <option value="Pendente">⋳ Pendente</option>
+                    <option value="Em Processo">🔄 Em Processo</option>
+                    <option value="Finalizada">✅ Finalizada</option>
+                    <option value="Cancelada">❌ Cancelada</option>
+                  </select>
+                </div>
+              )}
             </div>
           </div>
 
@@ -219,32 +269,32 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
                   </div>
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
-                    {/* Produto */}
+                    {/* Descrição */}
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Produto *
+                        Descrição *
                       </label>
                       <input
                         type="text"
-                        value={item.produto || ''}
-                        onChange={(e) => atualizarItem(index, 'produto', e.target.value)}
+                        value={item.descricao || ''}
+                        onChange={(e) => atualizarItem(index, 'descricao', e.target.value)}
                         placeholder="Ex: Produto A"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         disabled={carregando}
                       />
                     </div>
 
-                    {/* Preço Unitário */}
+                    {/* Preço */}
                     <div>
                       <label className="block text-xs font-medium text-gray-700 mb-1">
-                        Preço Unit. *
+                        Preço *
                       </label>
                       <input
                         type="number"
                         step="0.01"
                         min="0"
-                        value={item.precoUnitario || 0}
-                        onChange={(e) => atualizarItem(index, 'precoUnitario', parseFloat(e.target.value))}
+                        value={item.preco || 0}
+                        onChange={(e) => atualizarItem(index, 'preco', parseFloat(e.target.value))}
                         placeholder="0,00"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         disabled={carregando}
@@ -274,7 +324,7 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
                     <p className="text-sm text-gray-600">
                       Subtotal:{' '}
                       <span className="font-bold text-gray-900">
-                        {formatCurrency((item.precoUnitario || 0) * (item.quantidade || 1))}
+                        {formatCurrency((item.preco || 0) * (item.quantidade || 1))}
                       </span>
                     </p>
                   </div>
@@ -343,9 +393,15 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
               <p>
                 • O total é calculado automaticamente
               </p>
-              <p>
-                • A venda será criada com status <span className="font-semibold">Pendente</span>
-              </p>
+              {modo === 'criar' ? (
+                <p>
+                  • A venda será criada com status <span className="font-semibold">Pendente</span>
+                </p>
+              ) : (
+                <p>
+                  • Status atual: <span className="font-semibold">{status}</span>
+                </p>
+              )}
             </div>
           </div>
 

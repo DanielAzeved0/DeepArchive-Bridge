@@ -190,6 +190,46 @@ public class VendasController : ControllerBase
     }
 
     /// <summary>
+    /// Aprova uma venda mudando seu status de Pendente para Confirmada
+    /// </summary>
+    [HttpPost("{id}/aprovar")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<object>>> Aprovar(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        // Validação explícita de ID
+        if (id <= 0)
+            throw new ArgumentException("ID deve ser maior que zero");
+        
+        // Verificar se venda existe
+        var vendaExistente = await _repository.BuscarPorIdAsync(id, EstrategiaArmazenamento.Auto, cancellationToken);
+        if (vendaExistente == null)
+            throw new NotFoundException(nameof(Venda), id);
+
+        // Validar se está em status Pendente
+        if (vendaExistente.Status != VendaStatus.Pendente)
+            throw new ValidationException(
+                "Erro ao aprovar venda",
+                new[] { $"Venda deve estar em status 'Pendente' para ser aprovada. Status atual: {vendaExistente.Status}" }
+            );
+
+        // Atualizar status para Confirmada
+        vendaExistente.Status = VendaStatus.Confirmada;
+        await _repository.AtualizarAsync(vendaExistente, cancellationToken);
+
+        _logger.LogInformation("Venda {VendaId} aprovada com sucesso", id);
+
+        return Ok(new ApiResponse<object>
+        {
+            Sucesso = true,
+            Mensagem = "Venda aprovada com sucesso"
+        });
+    }
+
+    /// <summary>
     /// Deleta uma venda
     /// </summary>
     [HttpDelete("{id}")]

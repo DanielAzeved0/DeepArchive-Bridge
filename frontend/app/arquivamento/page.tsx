@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { archivingService } from '@/lib/api'
-import { ArquivamentoInfo } from '@/types'
+import { ArquivamentoInfo, ScheduleConfig } from '@/types'
 import { formatCurrency, formatDate, formatDateTime } from '@/lib/formatters'
 
 interface ArquivamentoLog {
@@ -22,7 +22,17 @@ export default function ArquivamentoPage() {
   const [erro, setErro] = useState<string | null>(null)
   const [sucesso, setSucesso] = useState(false)
   const [mostrarConfirmacao, setMostrarConfirmacao] = useState(false)
+  const [mostrarConfiguracaoAgendamento, setMostrarConfiguracaoAgendamento] = useState(false)
   const [tipoExecucao, setTipoExecucao] = useState<'manual' | 'automatico'>('manual')
+  
+  // Estados para agendamento
+  const [scheduleConfig, setScheduleConfig] = useState<ScheduleConfig>({
+    enabled: false,
+    hour: 2,
+    minute: 0,
+    daysOfWeek: [0, 1, 2, 3, 4, 5, 6] // Todos os dias
+  })
+  const [proximaExecucao, setProximaExecucao] = useState<string>('Amanhã às 02:00 AM')
 
   // Carregar informações de arquivamento
   const carregarInfo = async () => {
@@ -79,8 +89,39 @@ export default function ArquivamentoPage() {
     
     // Recarregar a cada 1 minuto
     const intervalo = setInterval(carregarInfo, 60000)
+    
+    // Carregar configuração de agendamento do localStorage
+    const savedConfig = window.localStorage.getItem('archiving_schedule_config')
+    if (savedConfig) {
+      try {
+        const config = JSON.parse(savedConfig)
+        setScheduleConfig(config)
+        calcularProximaExecucao(config)
+      } catch (error) {
+        console.error('Erro ao carregar configuração de agendamento:', error)
+      }
+    }
+    
     return () => clearInterval(intervalo)
   }, [])
+
+  // Função para calcular próxima execução
+  const calcularProximaExecucao = (config: ScheduleConfig) => {
+    const now = new Date()
+    const nextExecution = new Date()
+    nextExecution.setHours(config.hour, config.minute, 0, 0)
+    
+    // Se o horário já passou hoje, define para amanhã
+    if (nextExecution <= now) {
+      nextExecution.setDate(nextExecution.getDate() + 1)
+    }
+    
+    // Formatar data
+    const diasSemana = ['Domingo', 'Segunda', 'Terça', 'Quarta', 'Quinta', 'Sexta', 'Sábado']
+    const horaFormatada = `${String(config.hour).padStart(2, '0')}:${String(config.minute).padStart(2, '0')}`
+    const proximaDia = diasSemana[nextExecution.getDay()]
+    setProximaExecucao(`${proximaDia} às ${horaFormatada}`)
+  }
 
   // Executar arquivamento
   const executarArquivamento = async (tipo: 'manual' | 'automatico') => {
@@ -190,7 +231,7 @@ export default function ArquivamentoPage() {
         <div className="card bg-yellow-50 border-l-4 border-yellow-500">
           <p className="text-sm text-gray-600 font-medium">📦 Vendas a Arquivar</p>
           <p className="text-3xl font-bold text-gray-900 mt-2">
-            {info?.vendas_para_arquivar || 0}
+            {info?.vendasParaArquivar || 0}
           </p>
           <p className="text-xs text-gray-500 mt-2">
             Prontas para Cold Storage
@@ -201,7 +242,7 @@ export default function ArquivamentoPage() {
         <div className="card bg-blue-50 border-l-4 border-blue-500">
           <p className="text-sm text-gray-600 font-medium">💰 Valor Total</p>
           <p className="text-2xl font-bold text-gray-900 mt-2">
-            {formatCurrency(info?.valor_para_arquivar || 0)}
+            {formatCurrency(info?.valorAArquivar || 0)}
           </p>
           <p className="text-xs text-gray-500 mt-2">
             Em conversão
@@ -212,7 +253,7 @@ export default function ArquivamentoPage() {
         <div className="card bg-purple-50 border-l-4 border-purple-500">
           <p className="text-sm text-gray-600 font-medium">📅 Data Limite</p>
           <p className="text-2xl font-bold text-gray-900 mt-2">
-            {info?.data_limite ? formatDate(info.data_limite) : 'N/A'}
+            {info?.dataLimite ? formatDate(info.dataLimite) : 'N/A'}
           </p>
           <p className="text-xs text-gray-500 mt-2">
             Retenção Hot Storage
@@ -248,7 +289,7 @@ export default function ArquivamentoPage() {
                       setTipoExecucao('manual')
                       setMostrarConfirmacao(true)
                     }}
-                    disabled={executando || (info?.vendas_para_arquivar || 0) === 0}
+                    disabled={executando || (info?.vendasParaArquivar || 0) === 0}
                     className="px-4 py-2 bg-blue-500 hover:bg-blue-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition"
                   >
                     ▶️ Executar Agora
@@ -270,10 +311,9 @@ export default function ArquivamentoPage() {
                   </div>
                   <button
                     onClick={() => {
-                      setTipoExecucao('automatico')
-                      setMostrarConfirmacao(true)
+                      setMostrarConfiguracaoAgendamento(true)
                     }}
-                    disabled={executando || (info?.vendas_para_arquivar || 0) === 0}
+                    disabled={executando}
                     className="px-4 py-2 bg-green-500 hover:bg-green-600 disabled:opacity-50 disabled:cursor-not-allowed text-white rounded-lg font-semibold transition"
                   >
                     🕐 Agendar
@@ -282,7 +322,7 @@ export default function ArquivamentoPage() {
               </div>
 
               {/* Info */}
-              {(info?.vendas_para_arquivar || 0) === 0 && (
+              {(info?.vendasParaArquivar || 0) === 0 && (
                 <div className="p-4 bg-blue-50 border border-blue-200 rounded-lg">
                   <p className="text-sm text-blue-800">
                     ℹ️ Nenhuma venda pronta para arquivamento no momento
@@ -363,7 +403,7 @@ export default function ArquivamentoPage() {
               <div className="pt-3 border-t border-gray-200">
                 <p className="text-gray-600">Próxima Execução</p>
                 <p className="font-semibold text-gray-900 mt-1">
-                  Amanhã às 02:00 AM
+                  {proximaExecucao}
                 </p>
               </div>
             </div>
@@ -426,6 +466,115 @@ export default function ArquivamentoPage() {
       </div>
 
       {/* Modal de Confirmação */}
+      {mostrarConfiguracaoAgendamento && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-lg p-6 max-w-md w-full">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">
+              🕐 Configurar Agendamento Automático
+            </h3>
+
+            <div className="space-y-4">
+              {/* Seletor de Hora */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">
+                  Horário: {String(scheduleConfig.hour).padStart(2, '0')}:{String(scheduleConfig.minute).padStart(2, '0')}
+                </label>
+                <div className="flex gap-3">
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-600 mb-1">Hora</label>
+                    <input
+                      type="range"
+                      min="0"
+                      max="23"
+                      value={scheduleConfig.hour}
+                      onChange={(e) => setScheduleConfig({ ...scheduleConfig, hour: parseInt(e.target.value) })}
+                      className="w-full"
+                    />
+                    <div className="flex justify-between text-xs text-gray-500 mt-1">
+                      <span>00</span>
+                      <span>23</span>
+                    </div>
+                  </div>
+                  <div className="flex-1">
+                    <label className="block text-xs text-gray-600 mb-1">Minuto</label>
+                    <select
+                      value={scheduleConfig.minute}
+                      onChange={(e) => setScheduleConfig({ ...scheduleConfig, minute: parseInt(e.target.value) })}
+                      className="w-full px-2 py-1 border border-gray-300 rounded"
+                    >
+                      <option value={0}>00</option>
+                      <option value={15}>15</option>
+                      <option value={30}>30</option>
+                      <option value={45}>45</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              {/* Dias da Semana */}
+              <div>
+                <label className="block text-sm font-semibold text-gray-700 mb-2">Dias da Semana</label>
+                <div className="grid grid-cols-7 gap-2">
+                  {['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sab'].map((day, index) => (
+                    <label key={index} className="flex items-center justify-center">
+                      <input
+                        type="checkbox"
+                        checked={scheduleConfig.daysOfWeek.includes(index)}
+                        onChange={(e) => {
+                          const newDays = e.target.checked
+                            ? [...scheduleConfig.daysOfWeek, index]
+                            : scheduleConfig.daysOfWeek.filter(d => d !== index)
+                          setScheduleConfig({ ...scheduleConfig, daysOfWeek: newDays.sort() })
+                        }}
+                        className="mr-1"
+                      />
+                      <span className="text-xs text-gray-700">{day}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+
+              {/* Info */}
+              <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 text-sm">
+                <p className="text-blue-900">
+                  ℹ️ O arquivamento automático rodará diariamente nos dias selecionados
+                </p>
+              </div>
+            </div>
+
+            <div className="flex gap-3 mt-6">
+              <button
+                onClick={() => {
+                  setMostrarConfiguracaoAgendamento(false)
+                }}
+                disabled={executando}
+                className="flex-1 px-4 py-2 bg-gray-300 hover:bg-gray-400 text-gray-800 rounded-lg font-semibold disabled:opacity-50"
+              >
+                ← Cancelar
+              </button>
+              <button
+                onClick={() => {
+                  // Salvar configuração no localStorage
+                  window.localStorage.setItem('archiving_schedule_config', JSON.stringify(scheduleConfig))
+                  calcularProximaExecucao(scheduleConfig)
+                  setScheduleConfig({ ...scheduleConfig, enabled: true })
+                  setMostrarConfiguracaoAgendamento(false)
+                  
+                  // Mostrar confirmação
+                  setTipoExecucao('automatico')
+                  setMostrarConfirmacao(true)
+                }}
+                disabled={executando || scheduleConfig.daysOfWeek.length === 0}
+                className="flex-1 px-4 py-2 bg-green-500 hover:bg-green-600 text-white rounded-lg font-semibold disabled:opacity-50"
+              >
+                ✅ Confirmar Agendamento
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal de Confirmação */}
       {mostrarConfirmacao && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 max-w-sm w-full">
@@ -446,9 +595,9 @@ export default function ArquivamentoPage() {
             <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-4 text-sm">
               <p className="text-blue-900">
                 <span className="font-bold">
-                  {info?.vendas_para_arquivar}
+                  {info?.vendasParaArquivar}
                 </span>{' '}
-                vendas serão processadas ({formatCurrency(info?.valor_para_arquivar || 0)})
+                vendas serão processadas ({formatCurrency(info?.valorAArquivar || 0)})
               </p>
             </div>
 
