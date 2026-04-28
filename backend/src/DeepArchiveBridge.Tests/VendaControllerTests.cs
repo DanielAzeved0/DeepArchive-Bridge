@@ -47,8 +47,9 @@ public class VendaControllerTests : IClassFixture<TestApiFactory>
         var getResponse = await client.GetAsync($"/api/vendas/{createBody.Dados}");
         Assert.Equal(HttpStatusCode.OK, getResponse.StatusCode);
 
-        var getBody = await ReadApiResponse<Venda>(getResponse);
+        var getBody = await ReadApiResponse<VendaResponse>(getResponse);
         Assert.Equal("Cliente Integracao", getBody.Dados?.ClienteNome);
+        Assert.Equal("Produto Teste", getBody.Dados?.Itens.Single().Descricao);
 
         var approveResponse = await client.PostAsync($"/api/vendas/{createBody.Dados}/aprovar", null);
         Assert.Equal(HttpStatusCode.OK, approveResponse.StatusCode);

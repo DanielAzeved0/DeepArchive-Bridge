@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { ApiResponse, Venda, ArquivamentoInfo, HealthStatus } from '@/types'
+import { ApiResponse, Venda, ArquivamentoInfo, HealthStatus, CreateVendaRequest, UpdateVendaRequest } from '@/types'
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000/api'
 
@@ -127,13 +127,13 @@ export const vendaService = {
     return response.data
   },
 
-  criar: async (venda: Venda) => {
+  criar: async (venda: CreateVendaRequest) => {
     console.log('Dados enviados para criar venda:', JSON.stringify(venda, null, 2))
     const response = await api.post<ApiResponse<number>>('/vendas', venda)
     return response.data
   },
 
-  atualizar: async (id: number, venda: Venda) => {
+  atualizar: async (id: number, venda: UpdateVendaRequest) => {
     const response = await api.put<ApiResponse<object>>(`/vendas/${id}`, { ...venda, id })
     return response.data
   },

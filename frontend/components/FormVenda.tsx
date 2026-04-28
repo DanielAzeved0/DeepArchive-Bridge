@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { vendaService } from '@/lib/api'
-import { Venda, VendaItem, ApiResponse, VendaRequest, VendaItemRequest } from '@/types'
+import { Venda, VendaItem, ApiResponse, VendaRequest } from '@/types'
 import { formatCurrency } from '@/lib/formatters'
 
 interface FormVendaProps {
@@ -40,8 +40,8 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
   const [status, setStatus] = useState<'Pendente' | 'Em Processo' | 'Finalizada' | 'Cancelada'>(
     getStatusInitial()
   )
-  const [itens, setItens] = useState<(VendaItem & { id?: number })[]>(
-    vendaInicial?.itens || [{ id: 0, descricao: '', preco: 0, quantidade: 1 }]
+  const [itens, setItens] = useState<VendaItem[]>(
+    vendaInicial?.itens || [{ id: 0, descricao: '', valor: 0, quantidade: 1 }]
   )
 
   const [carregando, setCarregando] = useState(false)
@@ -56,7 +56,7 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
     
     for (let item of itens) {
       if (!item.descricao?.trim()) return 'Todos os itens devem ter descrição'
-      if (!item.preco || item.preco <= 0) return 'Valor do item deve ser maior que 0'
+      if (!item.valor || item.valor <= 0) return 'Valor do item deve ser maior que 0'
       if (!item.quantidade || item.quantidade <= 0) return 'Quantidade deve ser maior que 0'
     }
     
@@ -65,7 +65,7 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
 
   // Handlers para itens
   const adicionarItem = () => {
-    setItens([...itens, { id: 0, descricao: '', preco: 0, quantidade: 1 }])
+    setItens([...itens, { id: 0, descricao: '', valor: 0, quantidade: 1 }])
   }
 
   const removerItem = (index: number) => {
@@ -108,23 +108,24 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
         clienteId: vendaInicial?.clienteId || '',
         clienteNome,
         dataVenda: new Date(dataVenda).toISOString(),
-        valor: itens.reduce((acc, item) => acc + item.preco * item.quantidade, 0),
+        valor: itens.reduce((acc, item) => acc + (item.valor || 0) * item.quantidade, 0),
         status: statusMap[status] as any,
-        itens: itens.map(({ id, ...rest }) => ({
-          descricao: rest.descricao,
-          quantidade: rest.quantidade,
-          valor: rest.preco,
+        itens: itens.map((item) => ({
+          id: item.id,
+          descricao: item.descricao,
+          quantidade: item.quantidade,
+          valor: item.valor || 0,
         })),
       }
 
       let response: ApiResponse<any>
       
       if (modo === 'criar') {
-        response = await vendaService.criar(dadosVenda as any)
+        response = await vendaService.criar(dadosVenda)
       } else {
         response = await vendaService.atualizar(
           vendaInicial?.id || 0,
-          dadosVenda as any
+          dadosVenda
         )
       }
 
@@ -144,7 +145,7 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
     }
   }
 
-  const totalVenda = itens.reduce((acc, item) => acc + (item.preco * item.quantidade || 0), 0)
+  const totalVenda = itens.reduce((acc, item) => acc + ((item.valor || 0) * item.quantidade || 0), 0)
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -293,8 +294,8 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
                         type="number"
                         step="0.01"
                         min="0"
-                        value={item.preco || 0}
-                        onChange={(e) => atualizarItem(index, 'preco', parseFloat(e.target.value))}
+                        value={item.valor || 0}
+                        onChange={(e) => atualizarItem(index, 'valor', parseFloat(e.target.value))}
                         placeholder="0,00"
                         className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm"
                         disabled={carregando}
@@ -324,7 +325,7 @@ export function FormVenda({ vendaInicial, modo }: FormVendaProps) {
                     <p className="text-sm text-gray-600">
                       Subtotal:{' '}
                       <span className="font-bold text-gray-900">
-                        {formatCurrency((item.preco || 0) * (item.quantidade || 1))}
+                        {formatCurrency((item.valor || 0) * (item.quantidade || 1))}
                       </span>
                     </p>
                   </div>

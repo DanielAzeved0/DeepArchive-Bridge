@@ -35,7 +35,7 @@ public class VendasController : ControllerBase
     [HttpPost("buscar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
-    public async Task<ActionResult<ApiResponse<List<Venda>>>> Buscar(
+    public async Task<ActionResult<ApiResponse<List<VendaResponse>>>> Buscar(
         [FromBody] BuscaVendaRequest request,
         CancellationToken cancellationToken = default)
     {
@@ -58,10 +58,10 @@ public class VendasController : ControllerBase
 
         _logger.LogInformation($"Busca concluída: {vendas.Count} vendas encontradas em {stopwatch.ElapsedMilliseconds}ms");
 
-        var response = new ApiResponse<List<Venda>>
+        var response = new ApiResponse<List<VendaResponse>>
         {
             Sucesso = true,
-            Dados = vendas,
+            Dados = vendas.ConvertAll(VendaResponse.FromVenda),
             Mensagem = $"Encontradas {vendas.Count} vendas",
             Origem = "Bridge",
             TempoMs = stopwatch.ElapsedMilliseconds
@@ -76,7 +76,7 @@ public class VendasController : ControllerBase
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
-    public async Task<ActionResult<ApiResponse<Venda>>> BuscarPorId(
+    public async Task<ActionResult<ApiResponse<VendaResponse>>> BuscarPorId(
         int id, 
         CancellationToken cancellationToken = default)
     {
@@ -87,10 +87,10 @@ public class VendasController : ControllerBase
         if (venda == null)
             throw new NotFoundException(nameof(Venda), id);
 
-        return Ok(new ApiResponse<Venda>
+        return Ok(new ApiResponse<VendaResponse>
         {
             Sucesso = true,
-            Dados = venda,
+            Dados = VendaResponse.FromVenda(venda),
             TempoMs = stopwatch.ElapsedMilliseconds
         });
     }
@@ -155,15 +155,14 @@ public class VendasController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<object>>> Atualizar(
         int id, 
-        [FromBody] Venda venda,
+        [FromBody] UpdateVendaRequest request,
         CancellationToken cancellationToken = default)
     {
         // Validação explícita de ID
         if (id <= 0)
             throw new ArgumentException("ID deve ser maior que zero");
         
-        if (venda.Id != id)
-            throw new ValidationException("ID na URL não corresponde ao ID do corpo da requisição");
+        var venda = request.ToVenda(id);
 
         // Validar venda
         var validationResult = await _vendaValidator.ValidateAsync(venda, cancellationToken);

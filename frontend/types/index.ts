@@ -25,17 +25,12 @@ export type VendaStatus =
   | 'Confirmada'
   | 'Entregue'
   | 'Cancelada'
-  | 'Em Processo'
-  | 'Finalizada'
 
 export interface VendaItem {
   id?: number
-  descricao?: string
-  produto?: string
+  descricao: string
   quantidade: number
-  preco?: number
   valor?: number
-  precoUnitario?: number
   subtotal?: number
 }
 
@@ -67,24 +62,30 @@ export interface CreateVendaRequest {
   clienteId?: string
   dataVenda: string
   valor: number
-  itens: VendaItem[]
+  itens: VendaItemRequest[]
   status?: number
   observacoes?: string
 }
 
 export interface UpdateVendaRequest {
-  id: number
+  id?: number
   clienteNome: string
+  clienteId?: string
   dataVenda: string
   valor: number
-  itens: VendaItem[]
+  itens: VendaItemRequest[]
   status?: number
   observacoes?: string
 }
 
 // Type aliases para compatibilidade
 export type VendaRequest = CreateVendaRequest & { id?: number }
-export type VendaItemRequest = VendaItem
+export interface VendaItemRequest {
+  id?: number
+  descricao: string
+  quantidade: number
+  valor: number
+}
 
 export interface ArquivamentoInfo {
   totalVendas: number

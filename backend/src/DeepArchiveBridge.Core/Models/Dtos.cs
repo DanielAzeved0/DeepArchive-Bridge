@@ -114,6 +114,157 @@ public class CreateVendaItemRequest
 /// <summary>
 /// Response padrão
 /// </summary>
+public class UpdateVendaRequest
+{
+    [Required(ErrorMessage = "ClienteNome e obrigatorio")]
+    [StringLength(200, ErrorMessage = "ClienteNome nao pode exceder 200 caracteres")]
+    [JsonPropertyName("clienteNome")]
+    public string ClienteNome { get; set; } = string.Empty;
+
+    [JsonPropertyName("clienteId")]
+    [StringLength(100, ErrorMessage = "ClienteId nao pode exceder 100 caracteres")]
+    public string? ClienteId { get; set; }
+
+    [Required(ErrorMessage = "DataVenda e obrigatoria")]
+    [JsonPropertyName("dataVenda")]
+    public DateTime DataVenda { get; set; }
+
+    [Required(ErrorMessage = "Valor e obrigatorio")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Valor deve ser maior que 0")]
+    [JsonPropertyName("valor")]
+    public decimal Valor { get; set; }
+
+    [Required(ErrorMessage = "Itens sao obrigatorios")]
+    [MinLength(1, ErrorMessage = "Venda deve ter pelo menos 1 item")]
+    [JsonPropertyName("itens")]
+    public List<UpdateVendaItemRequest> Itens { get; set; } = new();
+
+    [JsonPropertyName("status")]
+    public VendaStatus Status { get; set; } = VendaStatus.Pendente;
+
+    public Venda ToVenda(int id)
+    {
+        return new Venda
+        {
+            Id = id,
+            ClienteId = string.IsNullOrWhiteSpace(ClienteId) ? string.Empty : ClienteId,
+            ClienteNome = ClienteNome,
+            DataVenda = DataVenda,
+            Valor = Valor,
+            Status = Status,
+            Itens = Itens.ConvertAll(i => i.ToVendaItem())
+        };
+    }
+}
+
+public class UpdateVendaItemRequest
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [Required(ErrorMessage = "Descricao/Produto e obrigatorio")]
+    [StringLength(500, ErrorMessage = "Descricao nao pode exceder 500 caracteres")]
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = string.Empty;
+
+    [Required(ErrorMessage = "Quantidade e obrigatoria")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Quantidade deve ser maior que 0")]
+    [JsonPropertyName("quantidade")]
+    public decimal Quantidade { get; set; }
+
+    [Required(ErrorMessage = "Valor e obrigatorio")]
+    [Range(0.01, double.MaxValue, ErrorMessage = "Valor deve ser maior que 0")]
+    [JsonPropertyName("valor")]
+    public decimal Valor { get; set; }
+
+    public VendaItem ToVendaItem()
+    {
+        return new VendaItem
+        {
+            Id = Id,
+            Produto = Descricao,
+            Quantidade = Quantidade,
+            PrecoUnitario = Valor
+        };
+    }
+}
+
+public class VendaResponse
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("clienteId")]
+    public string ClienteId { get; set; } = string.Empty;
+
+    [JsonPropertyName("clienteNome")]
+    public string ClienteNome { get; set; } = string.Empty;
+
+    [JsonPropertyName("valor")]
+    public decimal Valor { get; set; }
+
+    [JsonPropertyName("dataVenda")]
+    public DateTime DataVenda { get; set; }
+
+    [JsonPropertyName("status")]
+    public VendaStatus Status { get; set; }
+
+    [JsonPropertyName("itens")]
+    public List<VendaItemResponse> Itens { get; set; } = new();
+
+    [JsonPropertyName("dataCriacao")]
+    public DateTime DataCriacao { get; set; }
+
+    [JsonPropertyName("dataAtualizacao")]
+    public DateTime? DataAtualizacao { get; set; }
+
+    public static VendaResponse FromVenda(Venda venda)
+    {
+        return new VendaResponse
+        {
+            Id = venda.Id,
+            ClienteId = venda.ClienteId,
+            ClienteNome = venda.ClienteNome,
+            Valor = venda.Valor,
+            DataVenda = venda.DataVenda,
+            Status = venda.Status,
+            Itens = venda.Itens.ConvertAll(VendaItemResponse.FromVendaItem),
+            DataCriacao = venda.DataCriacao,
+            DataAtualizacao = venda.DataAtualizacao
+        };
+    }
+}
+
+public class VendaItemResponse
+{
+    [JsonPropertyName("id")]
+    public int Id { get; set; }
+
+    [JsonPropertyName("descricao")]
+    public string Descricao { get; set; } = string.Empty;
+
+    [JsonPropertyName("quantidade")]
+    public decimal Quantidade { get; set; }
+
+    [JsonPropertyName("valor")]
+    public decimal Valor { get; set; }
+
+    [JsonPropertyName("subtotal")]
+    public decimal Subtotal { get; set; }
+
+    public static VendaItemResponse FromVendaItem(VendaItem item)
+    {
+        return new VendaItemResponse
+        {
+            Id = item.Id,
+            Descricao = item.Produto,
+            Quantidade = item.Quantidade,
+            Valor = item.PrecoUnitario,
+            Subtotal = item.Total
+        };
+    }
+}
+
 public class ApiResponse<T>
 {
     [JsonPropertyName("sucesso")]

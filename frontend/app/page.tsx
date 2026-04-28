@@ -245,7 +245,7 @@ export default function Dashboard() {
                     <td className="py-4 px-4 text-gray-400">{formatarData(venda.dataCriacao)}</td>
                     <td className="py-4 px-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        venda.status === 'Finalizada' || venda.status === 'Confirmada' || venda.status === 2
+                        venda.status === 'Confirmada' || venda.status === 2
                           ? 'bg-green-900/50 text-green-300'
                           : venda.status === 'Pendente'
                           ? 'bg-yellow-900/50 text-yellow-300'

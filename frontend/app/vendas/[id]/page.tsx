@@ -104,7 +104,7 @@ export default function VendaDetalhesPage() {
   const statusCol = getStatusColor(venda.status)
   const items = venda.itens || []
   const totalItens = items.length
-  const totalItensValor = items.reduce((acc, item) => acc + (item.precoUnitario * item.quantidade), 0)
+  const totalItensValor = items.reduce((acc, item) => acc + (item.subtotal ?? (item.valor || 0) * item.quantidade), 0)
 
   return (
     <div className="min-h-screen bg-gray-50 p-4 md:p-8">
@@ -226,16 +226,16 @@ export default function VendaDetalhesPage() {
                       {items.map((item, index) => (
                         <tr key={index} className="border-b border-gray-200 hover:bg-blue-50">
                           <td className="px-4 py-3 text-sm text-gray-900">
-                            {item.produto || `Item ${index + 1}`}
+                            {item.descricao || `Item ${index + 1}`}
                           </td>
                           <td className="px-4 py-3 text-sm text-right text-gray-900 font-semibold">
-                            {formatCurrency(item.precoUnitario)}
+                            {formatCurrency(item.valor || 0)}
                           </td>
                           <td className="px-4 py-3 text-sm text-center text-gray-900">
                             {item.quantidade}x
                           </td>
                           <td className="px-4 py-3 text-sm text-right text-gray-900 font-bold">
-                            {formatCurrency(item.precoUnitario * item.quantidade)}
+                            {formatCurrency(item.subtotal ?? (item.valor || 0) * item.quantidade)}
                           </td>
                         </tr>
                       ))}
@@ -259,13 +259,13 @@ export default function VendaDetalhesPage() {
                       className="bg-white border border-gray-200 rounded-lg p-4"
                     >
                       <p className="font-semibold text-gray-900 mb-2">
-                        {item.produto || `Item ${index + 1}`}
+                        {item.descricao || `Item ${index + 1}`}
                       </p>
                       <div className="grid grid-cols-3 gap-2 text-sm">
                         <div>
                           <p className="text-gray-600 text-xs">Preço</p>
                           <p className="font-semibold text-gray-900">
-                            {formatCurrency(item.precoUnitario)}
+                            {formatCurrency(item.valor || 0)}
                           </p>
                         </div>
                         <div>
@@ -275,7 +275,7 @@ export default function VendaDetalhesPage() {
                         <div>
                           <p className="text-gray-600 text-xs">Subtotal</p>
                           <p className="font-semibold text-gray-900">
-                            {formatCurrency(item.precoUnitario * item.quantidade)}
+                            {formatCurrency(item.subtotal ?? (item.valor || 0) * item.quantidade)}
                           </p>
                         </div>
                       </div>

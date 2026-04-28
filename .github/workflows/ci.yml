@@ -1,0 +1,55 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+      - codex/testability-improvements
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  validate:
+    name: Build and test
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+
+      - name: Restore backend
+        shell: pwsh
+        run: dotnet restore backend/src/DeepArchiveBridge.Tests/DeepArchiveBridge.Tests.csproj --configfile NuGet.config
+
+      - name: Build backend
+        shell: pwsh
+        run: dotnet build backend/src/DeepArchiveBridge.Tests/DeepArchiveBridge.Tests.csproj --no-restore --disable-build-servers /p:UseSharedCompilation=false
+
+      - name: Test backend
+        shell: pwsh
+        run: dotnet test backend/src/DeepArchiveBridge.Tests/DeepArchiveBridge.Tests.csproj --no-build --no-restore --disable-build-servers /p:UseSharedCompilation=false
+
+      - name: Install frontend dependencies
+        working-directory: frontend
+        run: npm ci
+
+      - name: Type-check frontend
+        working-directory: frontend
+        run: npm run type-check
+
+      - name: Build frontend
+        working-directory: frontend
+        run: npm run build
