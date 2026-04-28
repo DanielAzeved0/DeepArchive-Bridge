@@ -79,7 +79,7 @@ public class ArquivamentoController : ControllerBase
         {
             Sucesso = true,
             Dados = quantidadeArquivada,
-            Mensagem = $"Arquivamento concluído: {quantidadeArquivada} vendas movidas para Cold Storage"
+            Mensagem = $"Arquivamento validado: {quantidadeArquivada} vendas disponíveis no SQLite unificado"
         });
     }
 }

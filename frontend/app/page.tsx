@@ -121,7 +121,7 @@ export default function Dashboard() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
         <StatCard
           title="Total de Vendas"
-          value={archivingInfo?.vendaRelativosArmazem ?? 0}
+          value={archivingInfo?.totalVendas ?? 0}
           icon="📦"
           color="#3b82f6"
         />
@@ -156,11 +156,11 @@ export default function Dashboard() {
             <div className="space-y-4 text-sm">
               <div className="flex justify-between items-center bg-gray-600/50 p-3 rounded">
                 <span className="text-gray-400"><strong>Docs Cold:</strong></span>
-                <span className="text-white font-semibold">{archivingInfo.vendaRelativosArquivo}</span>
+                <span className="text-white font-semibold">{archivingInfo.vendasParaArquivar}</span>
               </div>
               <div className="flex justify-between items-center bg-gray-600/50 p-3 rounded">
                 <span className="text-gray-400"><strong>Docs Hot:</strong></span>
-                <span className="text-white font-semibold">{archivingInfo.vendaRelativosArmazem}</span>
+                <span className="text-white font-semibold">{archivingInfo.totalVendas}</span>
               </div>
               <button
                 onClick={() => window.location.href = '/arquivamento'}
@@ -245,7 +245,7 @@ export default function Dashboard() {
                     <td className="py-4 px-4 text-gray-400">{formatarData(venda.dataCriacao)}</td>
                     <td className="py-4 px-4">
                       <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                        venda.status === 'Processada'
+                        venda.status === 'Finalizada' || venda.status === 'Confirmada' || venda.status === 2
                           ? 'bg-green-900/50 text-green-300'
                           : venda.status === 'Pendente'
                           ? 'bg-yellow-900/50 text-yellow-300'
