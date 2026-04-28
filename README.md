@@ -1,246 +1,110 @@
-# 🏢 DeepArchive-Bridge - Full Stack
+# DeepArchive-Bridge - Full Stack
 
-**Monorepo com Backend (.NET 8) e Frontend (Next.js 14)** para gerenciamento inteligente de vendas com arquivamento Hot/Cold Storage.
+Monorepo com backend em .NET 8 e frontend em Next.js 16 para gerenciamento de vendas com uma camada de arquivamento lógico sobre SQLite.
 
----
+## Estrutura
 
-## 📁 Estrutura do Projeto
-
-```
+```text
 DeepArchive-Bridge/
-├── .gitignore                  # Global .gitignore (raiz)
-├── README.md                   # Este arquivo
-│
-├── backend/                    # 🏢 API REST em .NET 8
-│   ├── README.md               # Documentação do backend
-│   ├── .gitignore              # .gitignore específico
-│   ├── DeepArchiveBridge.sln   # Solução Visual Studio
-│   ├── src/
-│   │   ├── DeepArchiveBridge.API/
-│   │   ├── DeepArchiveBridge.Core/
-│   │   └── DeepArchiveBridge.Data/
-│   └── [Mais arquivos...]
-│
-└── frontend/                   # 💻 SPA em Next.js 14
-    ├── README.md               # Documentação do frontend
-    ├── .gitignore              # .gitignore específico
-    ├── package.json            # Dependencies
-    ├── app/                    # App Router
-    ├── components/             # React components
-    ├── lib/                    # Utilidades
-    └── [Mais arquivos...]
+├── backend/
+│   ├── DeepArchiveBridge.sln
+│   └── src/
+│       ├── DeepArchiveBridge.API/
+│       ├── DeepArchiveBridge.Core/
+│       └── DeepArchiveBridge.Data/
+└── frontend/
+    ├── app/
+    ├── components/
+    ├── lib/
+    └── types/
 ```
 
----
+## Stack
 
-## 🚀 Como Rodar (Desenvolvimento Local)
+Backend:
+- ASP.NET Core 8
+- C# 12
+- Entity Framework Core 8
+- SQLite
+- FluentValidation
+- JWT Bearer
 
-### Pré-requisitos
-- ✅ .NET 8 SDK ([download](https://dotnet.microsoft.com/download))
-- ✅ Node.js 18+ + npm ([download](https://nodejs.org))
-- ✅ Git ([download](https://git-scm.com))
+Frontend:
+- Next.js 16.2.3
+- React 18
+- TypeScript
+- Tailwind CSS
+- Axios
 
-### Terminal 1: Backend
+## Como Rodar
+
+Backend:
 
 ```bash
-# Navegar para backend
 cd backend/src/DeepArchiveBridge.API
-
-# Rodar com hot reload
 dotnet watch run
-
-# API estará em: http://localhost:5000
 ```
 
-### Terminal 2: Frontend
+API: `http://localhost:5000`
+
+Frontend:
 
 ```bash
-# Navegar para frontend
 cd frontend
-
-# Instalar dependências (primeira vez)
 npm install
-
-# Rodar servidor de desenvolvimento
-npm run dev
-
-# Frontend estará em: http://localhost:3000
-```
-
----
-
-## 📚 Documentação
-
-- **[Backend README](backend/README.md)** - API, endpoints, autenticação JWT
-- **[Frontend README](frontend/README.md)** - Setup, componentes, features
-
----
-
-## 🏗️ Stack Utilizado
-
-### Backend
-- **Framework:** ASP.NET Core 8
-- **Linguagem:** C# 12
-- **Database:** Entity Framework Core + SQLite
-- **Validação:** FluentValidation
-- **Auth:** JWT Bearer Token (24h)
-
-### Frontend
-- **Framework:** Next.js 14 (App Router)
-- **Linguagem:** TypeScript (strict mode)
-- **Styling:** Tailwind CSS
-- **HTTP:** Axios com interceptors
-- **Auth:** JWT (auto-renewal)
-
----
-
-## ✨ Funcionalidades
-
-### 🔐 Autenticação
-- JWT Token (24h expiration)
-- Auto-renovação de token
-- Logout automático em 401/403
-
-### 📦 Gerenciamento de Vendas
-- CRUD completo (Create, Read, Update, Delete)
-- Paginação
-- Filtros avançados
-- Validação em camadas
-
-### 🗂️ Arquivamento
-- Informações de dados a arquivar
-- Estratégia Hot/Cold Storage
-- Consolidação automática
-
-### 🏥 Monitoramento
-- Health Check endpoint
-- Status da API (uptime, memória)
-- Rate limiting (100 req/min por IP)
-
----
-
-## 🔧 Operações Úteis
-
-### Limpar cache e reinstalar
-
-**Backend:**
-```bash
-cd backend
-dotnet clean
-dotnet restore
-```
-
-**Frontend:**
-```bash
-cd frontend
-rm -rf node_modules package-lock.json
-npm install
-```
-
-### Build para produção
-
-**Backend:**
-```bash
-cd backend
-dotnet publish -c Release -o ./publish
-# Executar: dotnet ./publish/DeepArchiveBridge.API.dll
-```
-
-**Frontend:**
-```bash
-cd frontend
-npm run build
-npm run start
-```
-
----
-
-## 🚨 Troubleshooting
-
-### Backend na porta 5000 em uso
-```bash
-# Usar outra porta
-dotnet run --urls "http://localhost:5001"
-```
-
-### Frontend na porta 3000 em uso
-```bash
-# Next.js automaticamente usa 3001 ou próxima disponível
 npm run dev
 ```
 
-### Limpar banco de dados
-```bash
-# Delete o arquivo de database
-rm backend/archive.db*
+App: `http://localhost:3000`
 
-# Criar novo migrate/seed
-dotnet ef database update
+No PowerShell, se `npm` for bloqueado pela Execution Policy, use `npm.cmd`:
+
+```powershell
+npm.cmd install
+npm.cmd run dev
 ```
 
-### Network Error entre frontend e backend
-```bash
-# Verificar se backend está rodando
-curl http://localhost:5000/api/health
+## Funcionalidades
 
-# Se frontend não conecta, verificar CORS em backend/appsettings.json
-```
+- CRUD de vendas
+- Busca por período, cliente, status e paginação
+- Aprovação de venda pendente
+- Autenticação JWT automática no frontend
+- Health check da API
+- Tela de arquivamento para identificar vendas antigas
 
----
+## Arquivamento
 
-## 🐳 Docker (Opcional)
+O projeto usa atualmente um banco SQLite unificado. A camada de arquivamento identifica vendas com mais de 90 dias e valida que elas continuam disponíveis pelo serviço de Cold Storage, mas não remove registros da base ativa.
 
-Para rodar tudo em containers:
+Isso evita perda de dados enquanto não houver dois armazenamentos fisicamente separados. Para uma arquitetura Hot/Cold real, o próximo passo seria configurar dois contextos/connections independentes, por exemplo `HotConnection` e `ColdConnection`, e só então mover registros entre eles.
 
-```bash
-# Será adicionado em breve
-docker-compose up
-```
+## Configuração
 
----
+A API lê a connection string `ConnectionStrings:SQLite`. Por compatibilidade, também aceita `ConnectionStrings:DefaultConnection`.
 
-## 📝 Padrões de Código
-
-### Request/Response
 ```json
 {
-  "sucesso": true,
-  "mensagem": "Operação concluída",
-  "dados": { ... },
-  "tempoMs": 45
+  "ConnectionStrings": {
+    "SQLite": "Data Source=archive.db;Cache=Shared"
+  }
 }
 ```
 
-### Autenticação
+## Validação
+
+Comandos principais:
+
+```powershell
+.\check.cmd
 ```
-Authorization: Bearer eyJhbGciOiJIUzI1NiIs...
+
+O script executa:
+
+```text
+dotnet restore
+dotnet build
+dotnet test
+npm.cmd run type-check
+npm.cmd run build
 ```
-
----
-
-## 🔗 Links Rápidos
-
-- **Backend Health:** http://localhost:5000/api/health
-- **Frontend App:** http://localhost:3000
-- **Documentation:** Veja README em cada pasta
-
----
-
-## 🤝 Contribuindo
-
-1. Criar branch: `git checkout -b feature/sua-feature`
-2. Fazer commits: `git commit -m "feat: descrição"`
-3. Push: `git push origin feature/sua-feature`
-4. Abrir Pull Request
-
----
-
-## 📄 Licença
-
-MIT - Livre para uso comercial e pessoal
-
----
-
-**Desenvolvido com ❤️ usando .NET 8 + Next.js 14**  
-**Última atualização:** 13 de Abril de 2026  
-**Status:** ✅ Pronto para Produção

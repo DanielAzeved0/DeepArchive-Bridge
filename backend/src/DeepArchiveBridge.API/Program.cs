@@ -20,7 +20,8 @@ using System.Text.Json.Serialization;
 var builder = WebApplication.CreateBuilder(args);
 
 // Configuração do Banco de Dados SQLite
-var sqliteConnectionString = builder.Configuration.GetConnectionString("DefaultConnection") 
+var sqliteConnectionString = builder.Configuration.GetConnectionString("SQLite")
+    ?? builder.Configuration.GetConnectionString("DefaultConnection")
     ?? "Data Source=archive.db;Cache=Shared";
 
 builder.Services.AddDbContext<VendaDbContext>(options =>
@@ -141,3 +142,5 @@ if (apiOptions.EnableHealthCheck)
 app.MapControllers();
 
 app.Run();
+
+public partial class Program { }

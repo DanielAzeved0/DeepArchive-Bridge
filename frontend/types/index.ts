@@ -19,11 +19,23 @@ export interface HealthStatus {
   dependenciesUnhealthy?: number
 }
 
+export type VendaStatus =
+  | number
+  | 'Pendente'
+  | 'Confirmada'
+  | 'Entregue'
+  | 'Cancelada'
+  | 'Em Processo'
+  | 'Finalizada'
+
 export interface VendaItem {
   id?: number
-  descricao: string
+  descricao?: string
+  produto?: string
   quantidade: number
-  preco: number
+  preco?: number
+  valor?: number
+  precoUnitario?: number
   subtotal?: number
 }
 
@@ -32,9 +44,11 @@ export interface Venda {
   clienteId: string
   clienteNome: string
   valor: number
-  status: 'Pendente' | 'Em Processo' | 'Finalizada' | 'Cancelada'
+  status: VendaStatus
+  dataVenda: string
   dataCriacao: string
   dataModificacao?: string
+  dataAtualizacao?: string
   itens: VendaItem[]
   observacoes?: string
   rowVersion?: string
@@ -51,16 +65,20 @@ export interface BuscaVendaRequest {
 export interface CreateVendaRequest {
   clienteNome: string
   clienteId?: string
+  dataVenda: string
   valor: number
   itens: VendaItem[]
+  status?: number
   observacoes?: string
 }
 
 export interface UpdateVendaRequest {
   id: number
   clienteNome: string
+  dataVenda: string
   valor: number
   itens: VendaItem[]
+  status?: number
   observacoes?: string
 }
 

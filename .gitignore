@@ -1,6 +1,8 @@
 # Build artifacts (Backend .NET)
 backend/bin/
 backend/obj/
+**/bin/
+**/obj/
 backend/Debug/
 backend/Release/
 backend/x64/
@@ -12,6 +14,12 @@ frontend/.next/
 frontend/dist/
 frontend/build/
 frontend/.turbo/
+frontend/tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# Local CLI/package caches used by validation scripts
+.dotnet-home/
+.nuget-packages/
 
 # Environment files
 .env

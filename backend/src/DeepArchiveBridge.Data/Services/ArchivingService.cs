@@ -8,8 +8,9 @@ using System.Diagnostics;
 namespace DeepArchiveBridge.Data.Services;
 
 /// <summary>
-/// Serviço responsável por arquivar automaticamente dados antigos (>90 dias)
-/// Move dados do PostgreSQL (Hot) para SQLite (Cold)
+/// Serviço responsável por identificar dados antigos (>90 dias).
+/// A implementação atual usa SQLite como armazenamento unificado, então o
+/// arquivamento valida a elegibilidade sem remover registros da base ativa.
 /// </summary>
 public class ArchivingService : IArchivingService
 {
@@ -78,7 +79,7 @@ public class ArchivingService : IArchivingService
 
     /// <summary>
     /// Arquiva automaticamente dados com mais de 90 dias
-    /// Move do Hot Storage (PostgreSQL) para Cold Storage (SQLite)
+    /// Mantém os dados no SQLite unificado para evitar perda de registros.
     /// </summary>
     public async Task<int> ArquivarDadosAntigos()
     {
@@ -100,16 +101,13 @@ public class ArchivingService : IArchivingService
                 return 0;
             }
 
-            _logger.LogInformation($"Arquivando {vendasParaArquivar.Count} vendas para Cold Storage");
+            _logger.LogInformation($"Validando {vendasParaArquivar.Count} vendas elegíveis para Cold Storage");
 
-            // Salva em SQLite (Cold Storage)
+            // No modo SQLite unificado, esta chamada garante que os registros estejam acessíveis
+            // pelo serviço de Cold Storage sem remover a origem.
             await _coldStorage.SalvarVendasAsync(vendasParaArquivar, DateTime.UtcNow);
 
-            // Remove do banco "quente" (PostgreSQL)
-            _hotContext.Vendas.RemoveRange(vendasParaArquivar);
-            await _hotContext.SaveChangesAsync();
-
-            _logger.LogInformation($"Arquivamento concluído: {vendasParaArquivar.Count} vendas movidas para Cold Storage");
+            _logger.LogInformation($"Arquivamento validado: {vendasParaArquivar.Count} vendas disponíveis no SQLite unificado");
 
             return vendasParaArquivar.Count;
         }
@@ -155,12 +153,9 @@ public class ArchivingService : IArchivingService
 
             _logger.LogInformation($"Iniciando arquivamento de {vendasParaArquivar.Count} vendas com {totalItens} itens");
 
-            // Salva em SQLite (Cold Storage)
+            // No modo SQLite unificado, esta chamada garante acesso pelo Cold Storage
+            // sem remover registros da base ativa.
             await _coldStorage.SalvarVendasAsync(vendasParaArquivar, DateTime.UtcNow);
-
-            // Remove do banco "quente"
-            _hotContext.Vendas.RemoveRange(vendasParaArquivar);
-            await _hotContext.SaveChangesAsync();
 
             stopwatch.Stop();
 
@@ -169,7 +164,7 @@ public class ArchivingService : IArchivingService
             resultado.ItensArquivados = totalItens;
             resultado.ArquivoNome = $"archive_{DateTime.UtcNow:yyyyMMdd_HHmmss}.sql";
             resultado.Duracao = stopwatch.Elapsed;
-            resultado.Mensagem = $"Arquivamento concluído: {vendasParaArquivar.Count} vendas e {totalItens} itens movidos para Cold Storage (SQLite)";
+            resultado.Mensagem = $"Arquivamento validado: {vendasParaArquivar.Count} vendas e {totalItens} itens disponíveis no SQLite unificado";
             resultado.TamanhoBytes = vendasParaArquivar.Sum(v => 100 + (v.Itens.Count * 50)); // Estimativa
 
             _logger.LogInformation($"Arquivamento concluído em {stopwatch.ElapsedMilliseconds}ms - {resultado.Mensagem}");
