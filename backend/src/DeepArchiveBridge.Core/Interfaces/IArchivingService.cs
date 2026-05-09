@@ -22,6 +22,10 @@ public interface IArchivingService
     /// Executa o arquivamento com confirmação manual
     /// </summary>
     Task<ResultadoArquivamento> ArquivarComConfirmacao();
+
+    Task<List<ArquivamentoLog>> ListarLogsAsync(int skip = 0, int take = 20, CancellationToken cancellationToken = default);
+
+    Task<ArquivamentoLog?> ObterUltimoLogAsync(CancellationToken cancellationToken = default);
 }
 
 /// <summary>

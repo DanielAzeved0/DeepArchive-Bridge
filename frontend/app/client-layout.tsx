@@ -7,6 +7,25 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
   const [isHealthy, setIsHealthy] = useState(true)
 
   useEffect(() => {
+    const applyTheme = () => {
+      const saved = window.localStorage.getItem('appSettings')
+      let settings = { theme: 'light' }
+      try {
+        settings = saved ? JSON.parse(saved) : settings
+      } catch {
+        settings = { theme: 'light' }
+      }
+      const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+      const useDark = settings.theme === 'dark' || (settings.theme === 'auto' && prefersDark)
+      document.documentElement.classList.toggle('app-dark', useDark)
+    }
+
+    applyTheme()
+    window.addEventListener('storage', applyTheme)
+    return () => window.removeEventListener('storage', applyTheme)
+  }, [])
+
+  useEffect(() => {
     const checkHealth = async () => {
       try {
         const response = await healthService.status()
@@ -50,7 +69,7 @@ export default function ClientLayout({ children }: { children: ReactNode }) {
 
           <div className="space-y-2">
             <p className="px-4 py-2 text-gray-400 font-semibold text-xs uppercase tracking-wider">⚙️ Admin</p>
-            <a href="/admin/health" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 text-gray-100 transition">
+            <a href="/health" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 text-gray-100 transition">
               🏥 <span>Status da API</span>
             </a>
             <a href="/config" className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-gray-700 text-gray-100 transition">

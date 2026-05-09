@@ -7,7 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="FluentValidation" Version="11.11.0" />
     <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.0" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="8.0.5" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.*" />
@@ -17,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="../DeepArchiveBridge.Application/DeepArchiveBridge.Application.csproj" />
     <ProjectReference Include="../DeepArchiveBridge.Core/DeepArchiveBridge.Core.csproj" />
     <ProjectReference Include="../DeepArchiveBridge.Data/DeepArchiveBridge.Data.csproj" />
   </ItemGroup>

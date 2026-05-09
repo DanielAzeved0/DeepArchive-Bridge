@@ -1,9 +1,6 @@
-using DeepArchiveBridge.API.Validators;
-using DeepArchiveBridge.Core.Exceptions;
-using DeepArchiveBridge.Core.Interfaces;
+using DeepArchiveBridge.Application.Services;
 using DeepArchiveBridge.Core.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Diagnostics;
 
 namespace DeepArchiveBridge.API.Controllers;
 
@@ -12,26 +9,13 @@ namespace DeepArchiveBridge.API.Controllers;
 [Microsoft.AspNetCore.Authorization.Authorize]
 public class VendasController : ControllerBase
 {
-    private readonly IVendaRepository _repository;
-    private readonly ILogger<VendasController> _logger;
-    private readonly BuscaVendaRequestValidator _buscaValidator;
-    private readonly VendaValidator _vendaValidator;
+    private readonly IVendaApplicationService _vendaService;
 
-    public VendasController(
-        IVendaRepository repository, 
-        ILogger<VendasController> logger,
-        BuscaVendaRequestValidator buscaValidator,
-        VendaValidator vendaValidator)
+    public VendasController(IVendaApplicationService vendaService)
     {
-        _repository = repository;
-        _logger = logger;
-        _buscaValidator = buscaValidator;
-        _vendaValidator = vendaValidator;
+        _vendaService = vendaService;
     }
 
-    /// <summary>
-    /// Busca vendas com suporte automático a Hot/Cold storage
-    /// </summary>
     [HttpPost("buscar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -39,65 +23,29 @@ public class VendasController : ControllerBase
         [FromBody] BuscaVendaRequest request,
         CancellationToken cancellationToken = default)
     {
-        var stopwatch = Stopwatch.StartNew();
-        
-        _logger.LogInformation($"Busca iniciada: DataInicio={request.DataInicio}, DataFim={request.DataFim}, Skip={request.Skip}, Take={request.Take}");
-
-        // Validar requisição
-        var validationResult = await _buscaValidator.ValidateAsync(request, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(
-                "Parâmetros de busca inválidos",
-                validationResult.Errors.Select(e => e.ErrorMessage)
-            );
-        }
-
-        var vendas = await _repository.BuscarAsync(request, EstrategiaArmazenamento.Auto, cancellationToken);
-        stopwatch.Stop();
-
-        _logger.LogInformation($"Busca concluída: {vendas.Count} vendas encontradas em {stopwatch.ElapsedMilliseconds}ms");
-
-        var response = new ApiResponse<List<VendaResponse>>
-        {
-            Sucesso = true,
-            Dados = vendas.ConvertAll(VendaResponse.FromVenda),
-            Mensagem = $"Encontradas {vendas.Count} vendas",
-            Origem = "Bridge",
-            TempoMs = stopwatch.ElapsedMilliseconds
-        };
-
-        return Ok(response);
+        return Ok(await _vendaService.BuscarAsync(request, cancellationToken));
     }
 
-    /// <summary>
-    /// Busca uma venda específica por ID
-    /// </summary>
     [HttpGet("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<VendaResponse>>> BuscarPorId(
-        int id, 
+        int id,
         CancellationToken cancellationToken = default)
     {
-        var stopwatch = Stopwatch.StartNew();
-        var venda = await _repository.BuscarPorIdAsync(id, EstrategiaArmazenamento.Auto, cancellationToken);
-        stopwatch.Stop();
-
-        if (venda == null)
-            throw new NotFoundException(nameof(Venda), id);
-
-        return Ok(new ApiResponse<VendaResponse>
-        {
-            Sucesso = true,
-            Dados = VendaResponse.FromVenda(venda),
-            TempoMs = stopwatch.ElapsedMilliseconds
-        });
+        return Ok(await _vendaService.BuscarPorIdAsync(id, cancellationToken));
     }
 
-    /// <summary>
-    /// Cria uma nova venda
-    /// </summary>
+    [HttpGet("{id}/navigation")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<ApiResponse<VendaNavigationResponse>>> BuscarNavegacao(
+        int id,
+        CancellationToken cancellationToken = default)
+    {
+        return Ok(await _vendaService.BuscarNavegacaoAsync(id, cancellationToken));
+    }
+
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -105,92 +53,22 @@ public class VendasController : ControllerBase
         [FromBody] CreateVendaRequest request,
         CancellationToken cancellationToken = default)
     {
-        _logger.LogInformation("Iniciando criação de venda com {ItemCount} itens", request.Itens.Count);
-        
-        // Converter DTO para entidade de domínio
-        var venda = request.ToVenda();
-
-        // Gerar ClienteId automaticamente se vazio
-        if (string.IsNullOrWhiteSpace(venda.ClienteId) && !string.IsNullOrWhiteSpace(venda.ClienteNome))
-        {
-            // Sanitizar: remover caracteres especiais, manter apenas alphanumméricos e hífen
-            var clienteIdBase = System.Text.RegularExpressions.Regex.Replace(
-                venda.ClienteNome.ToLower().Trim(),
-                "[^a-z0-9-]|",
-                "-"
-            ).Replace("--", "-");
-            
-            venda.ClienteId = clienteIdBase.Length > 50 
-                ? clienteIdBase.Substring(0, 50) 
-                : clienteIdBase;
-        }
-
-        // Validar venda
-        var validationResult = await _vendaValidator.ValidateAsync(venda, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            _logger.LogWarning("Validação falhou com {ErrorCount} erros", validationResult.Errors.Count);
-            throw new ValidationException(
-                "Dados da venda inválidos",
-                validationResult.Errors.Select(e => e.ErrorMessage)
-            );
-        }
-
-        var id = await _repository.CriarAsync(venda, cancellationToken);
-
-        return CreatedAtAction(nameof(BuscarPorId), new { id }, new ApiResponse<int>
-        {
-            Sucesso = true,
-            Dados = id,
-            Mensagem = "Venda criada com sucesso"
-        });
+        var response = await _vendaService.CriarAsync(request, cancellationToken);
+        return CreatedAtAction(nameof(BuscarPorId), new { id = response.Dados }, response);
     }
 
-    /// <summary>
-    /// Atualiza uma venda existente
-    /// </summary>
     [HttpPut("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     public async Task<ActionResult<ApiResponse<object>>> Atualizar(
-        int id, 
+        int id,
         [FromBody] UpdateVendaRequest request,
         CancellationToken cancellationToken = default)
     {
-        // Validação explícita de ID
-        if (id <= 0)
-            throw new ArgumentException("ID deve ser maior que zero");
-        
-        var venda = request.ToVenda(id);
-
-        // Validar venda
-        var validationResult = await _vendaValidator.ValidateAsync(venda, cancellationToken);
-        if (!validationResult.IsValid)
-        {
-            throw new ValidationException(
-                "Dados da venda inválidos",
-                validationResult.Errors.Select(e => e.ErrorMessage)
-            );
-        }
-
-        // Verificar se venda existe
-        var vendaExistente = await _repository.BuscarPorIdAsync(id, EstrategiaArmazenamento.Auto, cancellationToken);
-        if (vendaExistente == null)
-            throw new NotFoundException(nameof(Venda), id);
-
-        await _repository.AtualizarAsync(venda, cancellationToken);
-
-        return Ok(new ApiResponse<object>
-        {
-            Sucesso = true,
-            Mensagem = "Venda atualizada com sucesso"
-        });
+        return Ok(await _vendaService.AtualizarAsync(id, request, cancellationToken));
     }
 
-    /// <summary>
-    /// Aprova uma venda mudando seu status de Pendente para Confirmada
-    /// </summary>
     [HttpPost("{id}/aprovar")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
@@ -199,38 +77,9 @@ public class VendasController : ControllerBase
         int id,
         CancellationToken cancellationToken = default)
     {
-        // Validação explícita de ID
-        if (id <= 0)
-            throw new ArgumentException("ID deve ser maior que zero");
-        
-        // Verificar se venda existe
-        var vendaExistente = await _repository.BuscarPorIdAsync(id, EstrategiaArmazenamento.Auto, cancellationToken);
-        if (vendaExistente == null)
-            throw new NotFoundException(nameof(Venda), id);
-
-        // Validar se está em status Pendente
-        if (vendaExistente.Status != VendaStatus.Pendente)
-            throw new ValidationException(
-                "Erro ao aprovar venda",
-                new[] { $"Venda deve estar em status 'Pendente' para ser aprovada. Status atual: {vendaExistente.Status}" }
-            );
-
-        // Atualizar status para Confirmada
-        vendaExistente.Status = VendaStatus.Confirmada;
-        await _repository.AtualizarAsync(vendaExistente, cancellationToken);
-
-        _logger.LogInformation("Venda {VendaId} aprovada com sucesso", id);
-
-        return Ok(new ApiResponse<object>
-        {
-            Sucesso = true,
-            Mensagem = "Venda aprovada com sucesso"
-        });
+        return Ok(await _vendaService.AprovarAsync(id, cancellationToken));
     }
 
-    /// <summary>
-    /// Deleta uma venda
-    /// </summary>
     [HttpDelete("{id}")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     [ProducesResponseType(StatusCodes.Status404NotFound)]
@@ -238,21 +87,6 @@ public class VendasController : ControllerBase
         int id,
         CancellationToken cancellationToken = default)
     {
-        // Validação explícita de ID
-        if (id <= 0)
-            throw new ArgumentException("ID deve ser maior que zero");
-        
-        // Verificar se venda existe
-        var vendaExistente = await _repository.BuscarPorIdAsync(id, EstrategiaArmazenamento.Auto, cancellationToken);
-        if (vendaExistente == null)
-            throw new NotFoundException(nameof(Venda), id);
-
-        await _repository.DeletarAsync(id, cancellationToken);
-
-        return Ok(new ApiResponse<object>
-        {
-            Sucesso = true,
-            Mensagem = "Venda deletada com sucesso"
-        });
+        return Ok(await _vendaService.DeletarAsync(id, cancellationToken));
     }
 }

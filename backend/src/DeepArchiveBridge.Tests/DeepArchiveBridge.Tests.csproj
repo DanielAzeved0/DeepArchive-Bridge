@@ -20,6 +20,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\DeepArchiveBridge.API\DeepArchiveBridge.API.csproj" />
+    <ProjectReference Include="..\DeepArchiveBridge.Application\DeepArchiveBridge.Application.csproj" />
     <ProjectReference Include="..\DeepArchiveBridge.Core\DeepArchiveBridge.Core.csproj" />
     <ProjectReference Include="..\DeepArchiveBridge.Data\DeepArchiveBridge.Data.csproj" />
   </ItemGroup>

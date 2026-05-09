@@ -59,6 +59,7 @@ O backend segue uma organização em camadas, separando responsabilidades e faci
 | Camada | Responsabilidade |
 | --- | --- |
 | **API Layer** | Controllers, autenticação, middlewares, Swagger, CORS e configuração da aplicação. |
+| **Application Layer** | Casos de uso de vendas, validação de fluxo e orquestração entre API e domínio. |
 | **Core Layer** | Entidades, DTOs, interfaces, opções de configuração e exceções de domínio. |
 | **Data Layer** | Entity Framework Core, DbContext, repositórios, migrations e serviços de arquivamento. |
 | **Tests Layer** | Testes automatizados de autenticação, vendas, API e comportamento de arquivamento. |
@@ -84,10 +85,12 @@ flowchart TD
     C --> D["ASP.NET Core API"]
     D --> E["JWT Authentication"]
     E --> F["Controllers"]
-    F --> G["Validation Pipeline"]
-    G --> H["Application/Core Contracts"]
-    H --> I["Entity Framework Core"]
-    I --> J["SQLite Database"]
+    F --> G["Application Services"]
+    G --> H["Validation Pipeline"]
+    H --> I["Core Contracts"]
+    I --> N["Repository"]
+    N --> O["Entity Framework Core"]
+    O --> J["SQLite Database"]
     F --> K["Archive Layer"]
     K --> L["Logical Cold Storage"]
     F --> M["Health Check / Observability"]
@@ -158,8 +161,11 @@ DeepArchive-Bridge/
 │       │   ├── Controllers/
 │       │   ├── Middleware/
 │       │   ├── Services/
-│       │   ├── Validators/
+│       │   ├── Extensions/
 │       │   └── Program.cs
+│       ├── DeepArchiveBridge.Application/
+│       │   ├── Services/
+│       │   └── Validators/
 │       ├── DeepArchiveBridge.Core/
 │       │   ├── Exceptions/
 │       │   ├── Interfaces/
@@ -210,6 +216,8 @@ A camada de arquivamento identifica vendas antigas, especialmente registros com 
 
 Atualmente, o projeto utiliza um **SQLite unificado**. Por isso, o arquivamento lógico não remove registros da base ativa. Essa decisão evita perda de dados enquanto ainda não existe uma separação física entre armazenamento quente e frio.
 
+Cada execução de arquivamento grava um histórico real no banco, com data, status, quantidade processada, valor processado, duração e mensagem da operação. A API também expõe endpoints para listar os logs e consultar o último arquivamento.
+
 ### Possível evolução para Hot/Cold real
 
 - Banco principal para dados ativos.
@@ -229,8 +237,9 @@ O projeto possui testes automatizados no backend e validações de build/tipo no
 | Área | Cobertura |
 | --- | --- |
 | Auth | Testes do serviço de autenticação JWT. |
-| Vendas | Testes de criação, busca e aprovação de venda. |
-| Arquivamento | Teste garantindo que o arquivamento lógico não remove registros. |
+| Vendas | Testes de criação, busca, aprovação, atualização segura e navegação anterior/próxima. |
+| Arquivamento | Testes garantindo que o arquivamento lógico não remove registros e grava histórico real. |
+| Health | Teste garantindo que o endpoint de saúde usa dependências registradas. |
 | Frontend | Type-check com TypeScript e build de produção do Next.js. |
 
 Para executar a validação completa:
@@ -328,6 +337,12 @@ Exemplo:
   "ConnectionStrings": {
     "SQLite": "Data Source=archive.db;Cache=Shared"
   },
+  "ApiSettings": {
+    "AllowedOrigins": [
+      "http://localhost:3000",
+      "http://localhost:5000"
+    ]
+  },
   "JwtSettings": {
     "SecretKey": "your_secret_key_with_at_least_32_characters",
     "Issuer": "DeepArchiveBridge",
@@ -337,6 +352,7 @@ Exemplo:
 ```
 
 A API lê `ConnectionStrings:SQLite` e, por compatibilidade, também aceita `ConnectionStrings:DefaultConnection`.
+O campo `ApiSettings:AllowedOrigins` deve ser configurado como array de strings.
 
 ---
 
@@ -437,6 +453,7 @@ npm.cmd run build
 - Health check.
 - Arquivamento lógico.
 - DTOs para contratos de API.
+- Camada Application para casos de uso de vendas.
 - Testes automatizados.
 - Script de validação local.
 - Workflow de CI.
@@ -447,6 +464,7 @@ npm.cmd run build
 - Deploy completo de frontend e backend.
 - PostgreSQL para produção.
 - Bancos separados para Hot/Cold Storage.
+- Autenticação completa com usuários, senha com hash e refresh token.
 - Background workers para arquivamento automático.
 - Redis cache.
 - Message queues.

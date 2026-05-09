@@ -41,7 +41,8 @@ public class GlobalExceptionHandlerMiddleware
         var response = new ApiResponse<object>
         {
             Sucesso = false,
-            Mensagem = "Erro ao processar a requisição"
+            Mensagem = "Erro ao processar a requisição",
+            TraceId = context.TraceIdentifier
         };
 
         switch (exception)
@@ -54,7 +55,7 @@ public class GlobalExceptionHandlerMiddleware
             case ValidationException validation:
                 context.Response.StatusCode = StatusCodes.Status400BadRequest;
                 response.Mensagem = validation.Message;
-                response.Dados = new { Errors = validation.Errors };
+                response.Dados = new { errors = validation.Errors, traceId = context.TraceIdentifier };
                 break;
 
             case ConflictException conflict:
@@ -88,11 +89,11 @@ public class GlobalExceptionHandlerMiddleware
                 // NUNCA expor detalhes técnicos em produção
                 if (!context.RequestServices.GetRequiredService<IWebHostEnvironment>().IsProduction())
                 {
-                    response.Dados = new { ErrorId = context.TraceIdentifier, Type = exception.GetType().Name };
+                    response.Dados = new { traceId = context.TraceIdentifier, type = exception.GetType().Name };
                 }
                 else
                 {
-                    response.Dados = new { ErrorId = context.TraceIdentifier };
+                    response.Dados = new { traceId = context.TraceIdentifier };
                 }
                 break;
         }

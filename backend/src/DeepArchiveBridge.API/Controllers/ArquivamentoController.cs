@@ -62,6 +62,38 @@ public class ArquivamentoController : ControllerBase
         });
     }
 
+    [HttpGet("logs")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiResponse<List<ArquivamentoLog>>>> ListarLogs(
+        [FromQuery] int skip = 0,
+        [FromQuery] int take = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var logs = await _archivingService.ListarLogsAsync(skip, take, cancellationToken);
+
+        return Ok(new ApiResponse<List<ArquivamentoLog>>
+        {
+            Sucesso = true,
+            Dados = logs,
+            Mensagem = $"Encontrados {logs.Count} registros de arquivamento"
+        });
+    }
+
+    [HttpGet("ultimo")]
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    public async Task<ActionResult<ApiResponse<ArquivamentoLog?>>> ObterUltimo(
+        CancellationToken cancellationToken = default)
+    {
+        var log = await _archivingService.ObterUltimoLogAsync(cancellationToken);
+
+        return Ok(new ApiResponse<ArquivamentoLog?>
+        {
+            Sucesso = true,
+            Dados = log,
+            Mensagem = log == null ? "Nenhum arquivamento registrado" : "Ultimo arquivamento carregado"
+        });
+    }
+
     /// <summary>
     /// Executa o arquivamento automático sem confirmação (para agendamento)
     /// </summary>

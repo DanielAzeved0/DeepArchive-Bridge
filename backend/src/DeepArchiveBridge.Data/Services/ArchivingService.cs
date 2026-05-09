@@ -7,11 +7,6 @@ using System.Diagnostics;
 
 namespace DeepArchiveBridge.Data.Services;
 
-/// <summary>
-/// Serviço responsável por identificar dados antigos (>90 dias).
-/// A implementação atual usa SQLite como armazenamento unificado, então o
-/// arquivamento valida a elegibilidade sem remover registros da base ativa.
-/// </summary>
 public class ArchivingService : IArchivingService
 {
     private readonly VendaDbContext _hotContext;
@@ -20,7 +15,7 @@ public class ArchivingService : IArchivingService
     private const int DiasRetencaoHot = 90;
 
     public ArchivingService(
-        VendaDbContext hotContext, 
+        VendaDbContext hotContext,
         IColdStorageService coldStorage,
         ILogger<ArchivingService> logger)
     {
@@ -29,21 +24,16 @@ public class ArchivingService : IArchivingService
         _logger = logger;
     }
 
-    /// <summary>
-    /// Obtém informações sobre dados que serão arquivados
-    /// </summary>
     public async Task<ArquivamentoInfo> ObterInfoArquivamento()
     {
         try
         {
             var dataLimite = DateTime.UtcNow.AddDays(-DiasRetencaoHot);
 
-            // Dados totais - trazer para memória para contornar limitação do SQLite com Sum() em decimais
             var todasVendas = await _hotContext.Vendas.ToListAsync();
             var totalVendas = todasVendas.Count;
             var valorTotal = todasVendas.Sum(v => v.Valor);
 
-            // Dados para arquivar
             var vendasParaArquivarList = await _hotContext.Vendas
                 .Where(v => v.DataVenda < dataLimite)
                 .ToListAsync();
@@ -72,24 +62,20 @@ public class ArchivingService : IArchivingService
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao obter informações de arquivamento");
+            _logger.LogError(ex, "Erro ao obter informacoes de arquivamento");
             throw;
         }
     }
 
-    /// <summary>
-    /// Arquiva automaticamente dados com mais de 90 dias
-    /// Mantém os dados no SQLite unificado para evitar perda de registros.
-    /// </summary>
     public async Task<int> ArquivarDadosAntigos()
     {
+        var stopwatch = Stopwatch.StartNew();
+
         try
         {
-            _logger.LogInformation("Iniciando arquivamento automático de dados antigos");
+            _logger.LogInformation("Iniciando arquivamento automatico de dados antigos");
 
             var dataLimite = DateTime.UtcNow.AddDays(-DiasRetencaoHot);
-
-            // Identifica vendas para arquivar
             var vendasParaArquivar = await _hotContext.Vendas
                 .Where(v => v.DataVenda < dataLimite)
                 .Include(v => v.Itens)
@@ -97,33 +83,57 @@ public class ArchivingService : IArchivingService
 
             if (!vendasParaArquivar.Any())
             {
-                _logger.LogInformation("Nenhuma venda para arquivar");
+                stopwatch.Stop();
+                await RegistrarLogAsync(new ResultadoArquivamento
+                {
+                    Sucesso = true,
+                    DataExecucao = DateTime.UtcNow,
+                    Mensagem = "Nenhuma venda para arquivar",
+                    Duracao = stopwatch.Elapsed
+                }, 0);
+
                 return 0;
             }
 
-            _logger.LogInformation($"Validando {vendasParaArquivar.Count} vendas elegíveis para Cold Storage");
-
-            // No modo SQLite unificado, esta chamada garante que os registros estejam acessíveis
-            // pelo serviço de Cold Storage sem remover a origem.
             await _coldStorage.SalvarVendasAsync(vendasParaArquivar, DateTime.UtcNow);
+            stopwatch.Stop();
 
-            _logger.LogInformation($"Arquivamento validado: {vendasParaArquivar.Count} vendas disponíveis no SQLite unificado");
+            var resultado = new ResultadoArquivamento
+            {
+                Sucesso = true,
+                DataExecucao = DateTime.UtcNow,
+                VendasArquivadas = vendasParaArquivar.Count,
+                ItensArquivados = vendasParaArquivar.Sum(v => v.Itens.Count),
+                Duracao = stopwatch.Elapsed,
+                Mensagem = $"Arquivamento automatico validado: {vendasParaArquivar.Count} vendas disponiveis no SQLite unificado"
+            };
+
+            await RegistrarLogAsync(resultado, vendasParaArquivar.Sum(v => v.Valor));
+            _logger.LogInformation(resultado.Mensagem);
 
             return vendasParaArquivar.Count;
         }
         catch (Exception ex)
         {
+            stopwatch.Stop();
             _logger.LogError(ex, "Erro ao arquivar dados");
+
+            await RegistrarLogAsync(new ResultadoArquivamento
+            {
+                Sucesso = false,
+                DataExecucao = DateTime.UtcNow,
+                Duracao = stopwatch.Elapsed,
+                Mensagem = $"Erro: {ex.Message}"
+            }, 0);
+
             throw;
         }
     }
 
-    /// <summary>
-    /// Arquivamento com confirmação manual
-    /// </summary>
     public async Task<ResultadoArquivamento> ArquivarComConfirmacao()
     {
         var stopwatch = Stopwatch.StartNew();
+        decimal valorProcessado = 0;
         var resultado = new ResultadoArquivamento
         {
             DataExecucao = DateTime.UtcNow
@@ -132,8 +142,6 @@ public class ArchivingService : IArchivingService
         try
         {
             var dataLimite = DateTime.UtcNow.AddDays(-DiasRetencaoHot);
-
-            // Identifica vendas para arquivar
             var vendasParaArquivar = await _hotContext.Vendas
                 .Where(v => v.DataVenda < dataLimite)
                 .Include(v => v.Itens)
@@ -141,22 +149,25 @@ public class ArchivingService : IArchivingService
 
             if (!vendasParaArquivar.Any())
             {
+                stopwatch.Stop();
                 resultado.Sucesso = true;
                 resultado.Mensagem = "Nenhuma venda para arquivar";
                 resultado.VendasArquivadas = 0;
                 resultado.ItensArquivados = 0;
+                resultado.Duracao = stopwatch.Elapsed;
+                await RegistrarLogAsync(resultado, valorProcessado);
                 return resultado;
             }
 
-            // Conta itens
             var totalItens = vendasParaArquivar.Sum(v => v.Itens.Count);
+            valorProcessado = vendasParaArquivar.Sum(v => v.Valor);
 
-            _logger.LogInformation($"Iniciando arquivamento de {vendasParaArquivar.Count} vendas com {totalItens} itens");
+            _logger.LogInformation(
+                "Iniciando arquivamento de {Vendas} vendas com {Itens} itens",
+                vendasParaArquivar.Count,
+                totalItens);
 
-            // No modo SQLite unificado, esta chamada garante acesso pelo Cold Storage
-            // sem remover registros da base ativa.
             await _coldStorage.SalvarVendasAsync(vendasParaArquivar, DateTime.UtcNow);
-
             stopwatch.Stop();
 
             resultado.Sucesso = true;
@@ -164,21 +175,67 @@ public class ArchivingService : IArchivingService
             resultado.ItensArquivados = totalItens;
             resultado.ArquivoNome = $"archive_{DateTime.UtcNow:yyyyMMdd_HHmmss}.sql";
             resultado.Duracao = stopwatch.Elapsed;
-            resultado.Mensagem = $"Arquivamento validado: {vendasParaArquivar.Count} vendas e {totalItens} itens disponíveis no SQLite unificado";
-            resultado.TamanhoBytes = vendasParaArquivar.Sum(v => 100 + (v.Itens.Count * 50)); // Estimativa
+            resultado.Mensagem = $"Arquivamento validado: {vendasParaArquivar.Count} vendas e {totalItens} itens disponiveis no SQLite unificado";
+            resultado.TamanhoBytes = vendasParaArquivar.Sum(v => 100 + (v.Itens.Count * 50));
 
-            _logger.LogInformation($"Arquivamento concluído em {stopwatch.ElapsedMilliseconds}ms - {resultado.Mensagem}");
+            await RegistrarLogAsync(resultado, valorProcessado);
+            _logger.LogInformation(
+                "Arquivamento concluido em {ElapsedMs}ms - {Mensagem}",
+                stopwatch.ElapsedMilliseconds,
+                resultado.Mensagem);
 
             return resultado;
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao arquivar com confirmação");
             stopwatch.Stop();
+            _logger.LogError(ex, "Erro ao arquivar com confirmacao");
+
             resultado.Sucesso = false;
             resultado.Mensagem = $"Erro: {ex.Message}";
             resultado.Duracao = stopwatch.Elapsed;
+            await RegistrarLogAsync(resultado, valorProcessado);
             return resultado;
         }
+    }
+
+    public async Task<List<ArquivamentoLog>> ListarLogsAsync(
+        int skip = 0,
+        int take = 20,
+        CancellationToken cancellationToken = default)
+    {
+        var safeSkip = Math.Max(0, skip);
+        var safeTake = Math.Clamp(take, 1, 100);
+
+        return await _hotContext.ArquivamentoLogs
+            .AsNoTracking()
+            .OrderByDescending(log => log.DataExecucao)
+            .Skip(safeSkip)
+            .Take(safeTake)
+            .ToListAsync(cancellationToken);
+    }
+
+    public async Task<ArquivamentoLog?> ObterUltimoLogAsync(CancellationToken cancellationToken = default)
+    {
+        return await _hotContext.ArquivamentoLogs
+            .AsNoTracking()
+            .OrderByDescending(log => log.DataExecucao)
+            .FirstOrDefaultAsync(cancellationToken);
+    }
+
+    private async Task RegistrarLogAsync(ResultadoArquivamento resultado, decimal valorProcessado)
+    {
+        _hotContext.ArquivamentoLogs.Add(new ArquivamentoLog
+        {
+            DataExecucao = resultado.DataExecucao == default ? DateTime.UtcNow : resultado.DataExecucao,
+            Status = resultado.Sucesso ? "sucesso" : "erro",
+            VendasProcessadas = resultado.VendasArquivadas,
+            ItensProcessados = resultado.ItensArquivados,
+            ValorProcessado = valorProcessado,
+            DuracaoMs = (long)resultado.Duracao.TotalMilliseconds,
+            Mensagem = resultado.Mensagem
+        });
+
+        await _hotContext.SaveChangesAsync();
     }
 }

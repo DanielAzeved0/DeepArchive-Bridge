@@ -34,6 +34,24 @@ function getStatusString(status: number | string): string {
   return STATUS_MAP[status] || String(status)
 }
 
+function getConfiguredItemsPerPage() {
+  if (typeof window === 'undefined') {
+    return 10
+  }
+
+  const saved = window.localStorage.getItem('appSettings')
+  if (!saved) {
+    return 10
+  }
+
+  try {
+    const parsed = JSON.parse(saved)
+    return Number(parsed.itemsPorPagina) || 10
+  } catch {
+    return 10
+  }
+}
+
 export default function VendasPage() {
   const [vendas, setVendas] = useState<Venda[]>([])
   const [carregando, setCarregando] = useState(true)
@@ -42,7 +60,7 @@ export default function VendasPage() {
   const [totalPaginas, setTotalPaginas] = useState(1)
   const [sortField, setSortField] = useState<SortField>('dataVenda')
   const [sortOrder, setSortOrder] = useState<SortOrder>('desc')
-  const [itensPorPagina, setItensPorPagina] = useState(10)
+  const [itensPorPagina, setItensPorPagina] = useState(getConfiguredItemsPerPage)
 
   const [filtros, setFiltros] = useState<FilterOptions>({
     search: '',
@@ -74,16 +92,12 @@ export default function VendasPage() {
       const dataInicio = filtros.dataInicio || '2023-01-01'
       const dataFim = filtros.dataFim || new Date().toISOString().split('T')[0]
 
-      console.log('Buscando vendas com:', { dataInicio, dataFim, skip: (paginaAtual - 1) * itensPorPagina, take: itensPorPagina })
-      
       const vendas = await vendaService.buscar({
         dataInicio,
         dataFim,
         skip: (paginaAtual - 1) * itensPorPagina,
         take: itensPorPagina,
       })
-
-      console.log('Vendas retornadas:', vendas)
 
       if (vendas && Array.isArray(vendas)) {
         let dadosOrdenados = vendas

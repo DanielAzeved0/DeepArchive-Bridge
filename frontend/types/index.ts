@@ -6,6 +6,7 @@ export interface ApiResponse<T> {
   mensagem?: string
   origem?: string
   tempoMs?: number
+  traceId?: string
 }
 
 export interface HealthStatus {
@@ -95,6 +96,23 @@ export interface ArquivamentoInfo {
   dataMaisAntiga: string
   dataLimite: string
   mensagem: string
+}
+
+export interface ArquivamentoLog {
+  id: number
+  dataExecucao: string
+  status: 'sucesso' | 'erro' | 'processando'
+  vendasProcessadas: number
+  itensProcessados: number
+  valorProcessado: number
+  duracaoMs: number
+  mensagem: string
+}
+
+export interface VendaNavigation {
+  vendaId: number
+  anteriorId?: number | null
+  proximaId?: number | null
 }
 
 export interface ScheduleConfig {

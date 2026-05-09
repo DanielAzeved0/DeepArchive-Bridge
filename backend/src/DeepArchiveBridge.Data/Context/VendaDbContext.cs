@@ -15,6 +15,7 @@ public class VendaDbContext : DbContext
 
     public DbSet<Venda> Vendas => Set<Venda>();
     public DbSet<VendaItem> VendaItems => Set<VendaItem>();
+    public DbSet<ArquivamentoLog> ArquivamentoLogs => Set<ArquivamentoLog>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -65,6 +66,28 @@ public class VendaDbContext : DbContext
 
             entity.Property(e => e.PrecoUnitario)
                 .HasPrecision(18, 2);
+        });
+
+        modelBuilder.Entity<ArquivamentoLog>(entity =>
+        {
+            entity.HasKey(e => e.Id);
+
+            entity.Property(e => e.DataExecucao)
+                .IsRequired();
+
+            entity.Property(e => e.Status)
+                .IsRequired()
+                .HasMaxLength(32);
+
+            entity.Property(e => e.ValorProcessado)
+                .HasPrecision(18, 2);
+
+            entity.Property(e => e.Mensagem)
+                .IsRequired()
+                .HasMaxLength(500);
+
+            entity.HasIndex(e => e.DataExecucao);
+            entity.HasIndex(e => e.Status);
         });
     }
 }

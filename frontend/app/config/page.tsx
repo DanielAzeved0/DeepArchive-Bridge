@@ -37,6 +37,12 @@ export default function ConfigPage() {
   const [apiVersion, setApiVersion] = useState<string>('N/A')
   const [salvo, setSalvo] = useState(false)
 
+  const aplicarTema = (theme: AppSettings['theme']) => {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches
+    const useDark = theme === 'dark' || (theme === 'auto' && prefersDark)
+    document.documentElement.classList.toggle('app-dark', useDark)
+  }
+
   // Carregar versão da API
   useEffect(() => {
     const carregarVersion = async () => {
@@ -56,6 +62,7 @@ export default function ConfigPage() {
   // Salvar configurações
   const salvarConfigs = () => {
     localStorage.setItem('appSettings', JSON.stringify(settings))
+    aplicarTema(settings.theme)
     setSalvo(true)
     setTimeout(() => setSalvo(false), 3000)
   }
@@ -70,6 +77,7 @@ export default function ConfigPage() {
     }
     setSettings(padrao)
     localStorage.setItem('appSettings', JSON.stringify(padrao))
+    aplicarTema(padrao.theme)
     setSalvo(true)
     setTimeout(() => setSalvo(false), 3000)
   }
@@ -216,7 +224,7 @@ export default function ConfigPage() {
                   </div>
                   <div>
                     <p className="text-gray-600">Framework</p>
-                    <p className="font-semibold text-gray-900">Next.js 14</p>
+                    <p className="font-semibold text-gray-900">Next.js 16</p>
                   </div>
                 </div>
               </div>
@@ -285,7 +293,7 @@ export default function ConfigPage() {
             </Link>
 
             <a
-              href="https://github.com"
+              href="https://github.com/DanielAzeved0/DeepArchive-Bridge"
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 bg-gray-50 hover:bg-gray-100 border border-gray-200 rounded-lg transition"
@@ -295,7 +303,7 @@ export default function ConfigPage() {
             </a>
 
             <a
-              href="https://docs.example.com"
+              href="https://github.com/DanielAzeved0/DeepArchive-Bridge#readme"
               target="_blank"
               rel="noopener noreferrer"
               className="p-3 bg-indigo-50 hover:bg-indigo-100 border border-indigo-200 rounded-lg transition"

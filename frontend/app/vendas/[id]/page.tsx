@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useParams, useRouter } from 'next/navigation'
 import { vendaService } from '@/lib/api'
-import { Venda, VendaItem } from '@/types'
+import { Venda, VendaItem, VendaNavigation } from '@/types'
 import { formatCurrency, formatDate, formatDateTime } from '@/lib/formatters'
 
 interface VendaDetalhes extends Venda {
@@ -33,6 +33,7 @@ export default function VendaDetalhesPage() {
   const vendaId = params.id as string
 
   const [venda, setVenda] = useState<VendaDetalhes | null>(null)
+  const [navegacao, setNavegacao] = useState<VendaNavigation | null>(null)
   const [carregando, setCarregando] = useState(true)
   const [erro, setErro] = useState<string | null>(null)
 
@@ -42,10 +43,15 @@ export default function VendaDetalhesPage() {
         setCarregando(true)
         setErro(null)
 
-        const response = await vendaService.obterPorId(parseInt(vendaId))
+        const id = parseInt(vendaId)
+        const [response, navigationResponse] = await Promise.all([
+          vendaService.obterPorId(id),
+          vendaService.obterNavegacao(id),
+        ])
 
         if (response.sucesso && response.dados) {
           setVenda(response.dados)
+          setNavegacao(navigationResponse.sucesso ? navigationResponse.dados ?? null : null)
         } else {
           setErro(response.mensagem || 'Erro ao carregar venda')
         }
@@ -450,19 +456,23 @@ export default function VendaDetalhesPage() {
         <div className="flex gap-2">
           <button
             onClick={() => {
-              // TODO: Implementar navegação
-              alert('Navegação será implementada em breve')
+              if (navegacao?.anteriorId) {
+                router.push(`/vendas/${navegacao.anteriorId}`)
+              }
             }}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-semibold"
+            disabled={!navegacao?.anteriorId}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800 rounded-lg font-semibold"
           >
             ← Venda Anterior
           </button>
           <button
             onClick={() => {
-              // TODO: Implementar navegação
-              alert('Navegação será implementada em breve')
+              if (navegacao?.proximaId) {
+                router.push(`/vendas/${navegacao.proximaId}`)
+              }
             }}
-            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 text-gray-800 rounded-lg font-semibold"
+            disabled={!navegacao?.proximaId}
+            className="px-4 py-2 bg-gray-200 hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed text-gray-800 rounded-lg font-semibold"
           >
             Próxima Venda →
           </button>

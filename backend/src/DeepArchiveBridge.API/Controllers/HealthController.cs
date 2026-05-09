@@ -1,56 +1,73 @@
 using DeepArchiveBridge.Core.Models;
 using Microsoft.AspNetCore.Mvc;
+using System.Diagnostics;
 
 namespace DeepArchiveBridge.API.Controllers;
 
-/// <summary>
-/// Controller para verificação de saúde da API
-/// </summary>
 [ApiController]
 [Route("api/[controller]")]
 [Microsoft.AspNetCore.Authorization.AllowAnonymous]
 public class HealthController : ControllerBase
 {
     private readonly ILogger<HealthController> _logger;
+    private readonly IEnumerable<IDependencyHealthCheck> _dependencyChecks;
     private static readonly DateTime ApplicationStartTime = DateTime.UtcNow;
 
-    public HealthController(ILogger<HealthController> logger)
+    public HealthController(
+        ILogger<HealthController> logger,
+        IEnumerable<IDependencyHealthCheck> dependencyChecks)
     {
         _logger = logger;
+        _dependencyChecks = dependencyChecks;
     }
 
-    /// <summary>
-    /// Obtém o status de saúde da API
-    /// </summary>
-    /// <returns>Status de saúde com timestamp e versão</returns>
     [HttpGet]
     [Microsoft.AspNetCore.Authorization.AllowAnonymous]
     [ProducesResponseType(StatusCodes.Status200OK)]
-    public ActionResult<ApiResponse<HealthStatus>> GetHealth()
+    [ProducesResponseType(StatusCodes.Status503ServiceUnavailable)]
+    public async Task<ActionResult<ApiResponse<HealthStatus>>> GetHealth()
     {
+        var stopwatch = Stopwatch.StartNew();
+
         var uptime = (long)(DateTime.UtcNow - ApplicationStartTime).TotalSeconds;
         var memoryMB = GC.GetTotalMemory(false) / (1024 * 1024);
-        
+        var dependencyResults = await Task.WhenAll(_dependencyChecks.Select(check => check.CheckAsync()));
+        var dependenciesUnhealthy = dependencyResults.Count(result => !result.IsHealthy);
+        var status = dependenciesUnhealthy == 0 ? "Healthy" : "Degraded";
+
+        stopwatch.Stop();
+
         var health = new HealthStatus
         {
-            Status = "Healthy",
+            Status = status,
             Timestamp = DateTime.UtcNow,
-            ApiVersion = "1.0",
-            Uptime = uptime,  // Tempo em segundos desde o início
-            MemoryMB = memoryMB  // Memória em MB
+            ApiVersion = "2.0",
+            Uptime = uptime,
+            MemoryMB = memoryMB,
+            CheckDurationMs = stopwatch.ElapsedMilliseconds,
+            DependenciesHealthy = dependencyResults.Length - dependenciesUnhealthy,
+            DependenciesUnhealthy = dependenciesUnhealthy
         };
 
-        return Ok(new ApiResponse<HealthStatus>
+        _logger.LogInformation(
+            "Health check {Status}: {Healthy}/{Total} dependencies healthy in {ElapsedMs}ms",
+            status,
+            health.DependenciesHealthy,
+            dependencyResults.Length,
+            stopwatch.ElapsedMilliseconds);
+
+        var httpStatus = dependenciesUnhealthy == 0
+            ? StatusCodes.Status200OK
+            : StatusCodes.Status503ServiceUnavailable;
+
+        return StatusCode(httpStatus, new ApiResponse<HealthStatus>
         {
-            Sucesso = true,
-            Mensagem = "API está operacional",
+            Sucesso = dependenciesUnhealthy == 0,
+            Mensagem = $"API {status}",
             Dados = health
         });
     }
 
-    /// <summary>
-    /// Verifica apenas se a API está respondendo (health check simples)
-    /// </summary>
     [HttpGet("ping")]
     [ProducesResponseType(StatusCodes.Status200OK)]
     public IActionResult Ping()
@@ -59,48 +76,14 @@ public class HealthController : ControllerBase
     }
 }
 
-/// <summary>
-/// Modelo para informações de saúde da API
-/// </summary>
 public class HealthStatus
 {
-    /// <summary>
-    /// Status da API (Healthy, Degraded, Unhealthy)
-    /// </summary>
     public required string Status { get; set; }
-
-    /// <summary>
-    /// Timestamp UTC quando a verificação foi feita
-    /// </summary>
     public DateTime Timestamp { get; set; }
-
-    /// <summary>
-    /// Versão da API
-    /// </summary>
     public required string ApiVersion { get; set; }
-
-    /// <summary>
-    /// Tempo desde o início da aplicação em segundos
-    /// </summary>
     public long Uptime { get; set; }
-
-    /// <summary>
-    /// Uso de memória em MB
-    /// </summary>
     public long MemoryMB { get; set; }
-
-    /// <summary>
-    /// Tempo gasto na verificação de saúde (ms)
-    /// </summary>
     public long CheckDurationMs { get; set; }
-
-    /// <summary>
-    /// Quantidade de dependências saudáveis
-    /// </summary>
     public int DependenciesHealthy { get; set; }
-
-    /// <summary>
-    /// Quantidade de dependências com problemas
-    /// </summary>
     public int DependenciesUnhealthy { get; set; }
 }

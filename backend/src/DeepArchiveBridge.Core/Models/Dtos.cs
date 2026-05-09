@@ -265,6 +265,18 @@ public class VendaItemResponse
     }
 }
 
+public class VendaNavigationResponse
+{
+    [JsonPropertyName("vendaId")]
+    public int VendaId { get; set; }
+
+    [JsonPropertyName("anteriorId")]
+    public int? AnteriorId { get; set; }
+
+    [JsonPropertyName("proximaId")]
+    public int? ProximaId { get; set; }
+}
+
 public class ApiResponse<T>
 {
     [JsonPropertyName("sucesso")]
@@ -281,4 +293,7 @@ public class ApiResponse<T>
 
     [JsonPropertyName("tempoMs")]
     public long TempoMs { get; set; }
+
+    [JsonPropertyName("traceId")]
+    public string? TraceId { get; set; }
 }

@@ -27,6 +27,8 @@ public interface IVendaRepository
         EstrategiaArmazenamento estrategia = EstrategiaArmazenamento.Auto,
         CancellationToken cancellationToken = default);
 
+    Task<VendaNavigationResponse> BuscarNavegacaoAsync(int id, CancellationToken cancellationToken = default);
+
     Task<int> CriarAsync(Venda venda, CancellationToken cancellationToken = default);
     
     Task AtualizarAsync(Venda venda, CancellationToken cancellationToken = default);

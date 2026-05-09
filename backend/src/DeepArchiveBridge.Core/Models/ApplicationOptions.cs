@@ -59,9 +59,9 @@ public class ApiOptions
     public bool EnableCors { get; set; } = false;
 
     /// <summary>
-    /// Origens permitidas para CORS (separadas por vírgula)
+    /// Origens permitidas para CORS
     /// </summary>
-    public string AllowedOrigins { get; set; } = "http://localhost:3000,http://localhost:5000";
+    public string[] AllowedOrigins { get; set; } = ["http://localhost:3000", "http://localhost:5000"];
 
     /// <summary>
     /// Habilitar Health Check
