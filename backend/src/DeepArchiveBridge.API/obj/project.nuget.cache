@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "tUGLbC/QhMQ=",
+  "dgSpecHash": "I33ntzaSc98=",
   "success": true,
-  "projectFilePath": "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+  "projectFilePath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\apache.arrow\\2.0.0\\apache.arrow.2.0.0.nupkg.sha512",
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\fluentvalidation\\11.11.0\\fluentvalidation.11.11.0.nupkg.sha512",
@@ -37,7 +37,7 @@
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\microsoft.extensions.fileproviders.abstractions\\8.0.0\\microsoft.extensions.fileproviders.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\microsoft.extensions.hosting.abstractions\\8.0.0\\microsoft.extensions.hosting.abstractions.8.0.0.nupkg.sha512",
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\microsoft.extensions.logging\\8.0.1\\microsoft.extensions.logging.8.0.1.nupkg.sha512",
-    "C:\\Users\\Famili Azevedo\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.2\\microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+    "C:\\Users\\Famili Azevedo\\.nuget\\packages\\microsoft.extensions.logging.abstractions\\8.0.3\\microsoft.extensions.logging.abstractions.8.0.3.nupkg.sha512",
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\microsoft.extensions.options\\8.0.2\\microsoft.extensions.options.8.0.2.nupkg.sha512",
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\microsoft.extensions.primitives\\8.0.0\\microsoft.extensions.primitives.8.0.0.nupkg.sha512",
     "C:\\Users\\Famili Azevedo\\.nuget\\packages\\microsoft.identitymodel.abstractions\\8.0.0\\microsoft.identitymodel.abstractions.8.0.0.nupkg.sha512",

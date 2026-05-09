@@ -745,7 +745,7 @@
           "buildTransitive/net6.0/_._": {}
         }
       },
-      "Microsoft.Extensions.Logging.Abstractions/8.0.2": {
+      "Microsoft.Extensions.Logging.Abstractions/8.0.3": {
         "type": "package",
         "dependencies": {
           "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2"
@@ -1459,6 +1459,22 @@
         },
         "runtime": {
           "lib/netcoreapp2.1/_._": {}
+        }
+      },
+      "DeepArchiveBridge.Application/1.0.0": {
+        "type": "project",
+        "framework": ".NETCoreApp,Version=v8.0",
+        "dependencies": {
+          "DeepArchiveBridge.Core": "1.0.0",
+          "FluentValidation": "11.11.0",
+          "Microsoft.Extensions.DependencyInjection.Abstractions": "8.0.2",
+          "Microsoft.Extensions.Logging.Abstractions": "8.0.3"
+        },
+        "compile": {
+          "bin/placeholder/DeepArchiveBridge.Application.dll": {}
+        },
+        "runtime": {
+          "bin/placeholder/DeepArchiveBridge.Application.dll": {}
         }
       },
       "DeepArchiveBridge.Core/1.0.0": {
@@ -2757,10 +2773,10 @@
         "useSharedDesignerContext.txt"
       ]
     },
-    "Microsoft.Extensions.Logging.Abstractions/8.0.2": {
-      "sha512": "nroMDjS7hNBPtkZqVBbSiQaQjWRDxITI8Y7XnDs97rqG3EbzVTNLZQf7bIeUJcaHOV8bca47s1Uxq94+2oGdxA==",
+    "Microsoft.Extensions.Logging.Abstractions/8.0.3": {
+      "sha512": "dL0QGToTxggRLMYY4ZYX5AMwBb+byQBd/5dMiZE07Nv73o6I5Are3C7eQTh7K2+A4ct0PVISSr7TZANbiNb2yQ==",
       "type": "package",
-      "path": "microsoft.extensions.logging.abstractions/8.0.2",
+      "path": "microsoft.extensions.logging.abstractions/8.0.3",
       "files": [
         ".nupkg.metadata",
         ".signature.p7s",
@@ -2825,7 +2841,7 @@
         "lib/net8.0/Microsoft.Extensions.Logging.Abstractions.xml",
         "lib/netstandard2.0/Microsoft.Extensions.Logging.Abstractions.dll",
         "lib/netstandard2.0/Microsoft.Extensions.Logging.Abstractions.xml",
-        "microsoft.extensions.logging.abstractions.8.0.2.nupkg.sha512",
+        "microsoft.extensions.logging.abstractions.8.0.3.nupkg.sha512",
         "microsoft.extensions.logging.abstractions.nuspec",
         "useSharedDesignerContext.txt"
       ]
@@ -3785,6 +3801,11 @@
         "version.txt"
       ]
     },
+    "DeepArchiveBridge.Application/1.0.0": {
+      "type": "project",
+      "path": "../DeepArchiveBridge.Application/DeepArchiveBridge.Application.csproj",
+      "msbuildProject": "../DeepArchiveBridge.Application/DeepArchiveBridge.Application.csproj"
+    },
     "DeepArchiveBridge.Core/1.0.0": {
       "type": "project",
       "path": "../DeepArchiveBridge.Core/DeepArchiveBridge.Core.csproj",
@@ -3798,9 +3819,9 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "DeepArchiveBridge.Application >= 1.0.0",
       "DeepArchiveBridge.Core >= 1.0.0",
       "DeepArchiveBridge.Data >= 1.0.0",
-      "FluentValidation >= 11.11.0",
       "Microsoft.AspNetCore.Authentication.JwtBearer >= 8.0.0",
       "Microsoft.EntityFrameworkCore.Design >= 8.0.5",
       "Microsoft.EntityFrameworkCore.Sqlite >= 8.0.*",
@@ -3815,14 +3836,14 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+      "projectUniqueName": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
       "projectName": "DeepArchiveBridge.API",
-      "projectPath": "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
+      "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\DeepArchiveBridge.API.csproj",
       "packagesPath": "C:\\Users\\Famili Azevedo\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\obj\\",
+      "outputPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.API\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\NuGet.Config",
+        "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\NuGet.Config",
         "C:\\Users\\Famili Azevedo\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -3836,11 +3857,14 @@
         "net8.0": {
           "targetAlias": "net8.0",
           "projectReferences": {
-            "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
-              "projectPath": "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj"
+            "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Application\\DeepArchiveBridge.Application.csproj": {
+              "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Application\\DeepArchiveBridge.Application.csproj"
             },
-            "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {
-              "projectPath": "C:\\Users\\Famili Azevedo\\.codex\\worktrees\\d67d\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj"
+            "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj": {
+              "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Core\\DeepArchiveBridge.Core.csproj"
+            },
+            "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj": {
+              "projectPath": "C:\\Users\\Famili Azevedo\\Desktop\\DeepArchive-Bridge\\backend\\src\\DeepArchiveBridge.Data\\DeepArchiveBridge.Data.csproj"
             }
           }
         }
@@ -3861,10 +3885,6 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
-          "FluentValidation": {
-            "target": "Package",
-            "version": "[11.11.0, )"
-          },
           "Microsoft.AspNetCore.Authentication.JwtBearer": {
             "target": "Package",
             "version": "[8.0.0, )"

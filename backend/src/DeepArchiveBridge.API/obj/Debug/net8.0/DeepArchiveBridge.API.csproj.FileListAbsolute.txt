@@ -484,3 +484,5 @@ C:\Users\Famili Azevedo\.codex\worktrees\d67d\DeepArchive-Bridge\backend\src\Dee
 C:\Users\Famili Azevedo\.codex\worktrees\d67d\DeepArchive-Bridge\backend\src\DeepArchiveBridge.API\obj\Debug\net8.0\DeepArchiveBridge.API.pdb
 C:\Users\Famili Azevedo\.codex\worktrees\d67d\DeepArchive-Bridge\backend\src\DeepArchiveBridge.API\obj\Debug\net8.0\DeepArchiveBridge.API.genruntimeconfig.cache
 C:\Users\Famili Azevedo\.codex\worktrees\d67d\DeepArchive-Bridge\backend\src\DeepArchiveBridge.API\obj\Debug\net8.0\ref\DeepArchiveBridge.API.dll
+C:\Users\Famili Azevedo\Desktop\DeepArchive-Bridge\backend\src\DeepArchiveBridge.API\bin\Debug\net8.0\DeepArchiveBridge.Application.dll
+C:\Users\Famili Azevedo\Desktop\DeepArchive-Bridge\backend\src\DeepArchiveBridge.API\bin\Debug\net8.0\DeepArchiveBridge.Application.pdb
